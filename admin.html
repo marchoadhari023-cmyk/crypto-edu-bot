@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto AI — Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #050505; color: #e8d5a3; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #wrap { width: 100%; max-width: 500px; }
+    h1 { font-size: 18px; font-weight: 600; color: #c9a84c; margin-bottom: 4px; }
+    p { font-size: 12px; color: #6b5c3e; margin-bottom: 24px; }
+    .card { background: #0a0a0a; border: 0.5px solid #2a2218; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .card h2 { font-size: 13px; color: #c9a84c; margin-bottom: 16px; font-weight: 500; }
+    label { font-size: 12px; color: #6b5c3e; display: block; margin-bottom: 6px; }
+    input, select { width: 100%; font-size: 13px; padding: 10px 14px; border-radius: 10px; border: 0.5px solid #2a2218; background: #0f0d07; color: #d4bc8a; outline: none; margin-bottom: 14px; }
+    input:focus, select:focus { border-color: #c9a84c; }
+    button { width: 100%; padding: 11px; border-radius: 10px; border: 0.5px solid #c9a84c; background: #1a1508; color: #c9a84c; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.15s; }
+    button:hover { background: #251d0a; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    #result { margin-top: 16px; padding: 14px; border-radius: 10px; background: #1a1508; border: 0.5px solid #2a2218; display: none; }
+    #result h3 { font-size: 12px; color: #6b5c3e; margin-bottom: 10px; }
+    .code-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #0f0d07; border: 0.5px solid #2a2218; border-radius: 8px; margin-bottom: 8px; }
+    .code-text { font-size: 14px; font-weight: 600; color: #c9a84c; letter-spacing: 1px; font-family: monospace; }
+    .copy-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 0.5px solid #2a2218; background: transparent; color: #6b5c3e; cursor: pointer; width: auto; }
+    .copy-btn:hover { border-color: #c9a84c; color: #c9a84c; background: transparent; }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+    #msg { font-size: 12px; margin-top: 8px; min-height: 16px; }
+    #msg.error { color: #f87171; }
+    #msg.success { color: #4ade80; }
+    .divider { border: none; border-top: 0.5px solid #2a2218; margin: 16px 0; }
+    .step { display: flex; gap: 10px; margin-bottom: 10px; }
+    .step-num { width: 20px; height: 20px; border-radius: 50%; background: #1a1508; border: 0.5px solid #c9a84c; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #c9a84c; flex-shrink: 0; }
+    .step-text { font-size: 12px; color: #6b5c3e; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <h1>⚡ Admin Panel — Crypto AI</h1>
+    <p>Generate kode akses premium untuk user yang sudah bayar</p>
+
+    <div class="card">
+      <h2>🔑 Generate Kode Premium</h2>
+
+      <label>Password Admin</label>
+      <input type="password" id="secret" placeholder="Masukkan password admin" />
+
+      <label>Tipe Kode</label>
+      <select id="type">
+        <option value="earlybird">Early Bird — Rp 75.000/bulan (10 slot pertama)</option>
+        <option value="regular">Regular — Rp 100.000/bulan</option>
+      </select>
+
+      <label>Jumlah Kode</label>
+      <input type="number" id="count" value="1" min="1" max="10" />
+
+      <button id="generate-btn" onclick="generateCode()">Generate Kode</button>
+      <div id="msg"></div>
+
+      <div id="result">
+        <h3>Kode yang dihasilkan — kirim ke user:</h3>
+        <div id="codes-list"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Cara Pakai</h2>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">User bayar via GoPay/OVO/Dana dan kirim bukti ke kamu di Telegram</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Buka halaman ini → pilih tipe → klik Generate Kode</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Copy kode → kirim ke user via Telegram</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Tambahkan kode ke Vercel Environment Variables (VALID_PREMIUM_CODES) dipisah koma</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text">User input kode di chatbot → Premium unlimited aktif otomatis</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function generateCode() {
+      const secret = document.getElementById('secret').value.trim();
+      const type = document.getElementById('type').value;
+      const count = parseInt(document.getElementById('count').value);
+      const msg = document.getElementById('msg');
+      const btn = document.getElementById('generate-btn');
+
+      if (!secret) { msg.textContent = 'Masukkan password admin dulu.'; msg.className = 'error'; return; }
+
+      btn.disabled = true;
+      msg.textContent = 'Generating...';
+      msg.className = '';
+
+      try {
+        const r = await fetch('/api/generate-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ secret, type, count })
+        });
+        const d = await r.json();
+
+        if (d.success) {
+          msg.textContent = `✓ ${d.codes.length} kode berhasil dibuat (${d.price})`;
+          msg.className = 'success';
+
+          const codesList = document.getElementById('codes-list');
+          codesList.innerHTML = '';
+          d.codes.forEach(code => {
+            const item = document.createElement('div');
+            item.className = 'code-item';
+            item.innerHTML = `
+              <span class="code-text">${code}</span>
+              <button class="copy-btn" onclick="copyCode(this, '${code}')">Copy</button>
+            `;
+            codesList.appendChild(item);
+          });
+
+          document.getElementById('result').style.display = 'block';
+        } else {
+          msg.textContent = '✗ Password salah atau error.';
+          msg.className = 'error';
+        }
+      } catch (e) {
+        msg.textContent = 'Koneksi bermasalah. Coba lagi.';
+        msg.className = 'error';
+      }
+
+      btn.disabled = false;
+    }
+
+    function copyCode(btn, code) {
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.className = 'copy-btn copied';
+        setTimeout(() => { btn.textContent = 'Copy'; btn.className = 'copy-btn'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
