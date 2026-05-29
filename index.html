@@ -258,7 +258,7 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
 
     function checkMemberCode() {
       const hash = window.location.hash;
-      if (hash === '#member') {
+      if (hash === "#member" || hash.startsWith("#member-")) {
         const usage = getUsage();
         usage.isMember = true;
         saveUsage(usage);
