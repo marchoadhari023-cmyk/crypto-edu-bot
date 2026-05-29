@@ -7,7 +7,6 @@ export default async function handler(req, res) {
   const WEBHOOK_URL = `${process.env.CHATBOT_URL}/api/telegram-webhook`;
 
   try {
-    // Setup webhook
     const webhookRes = await fetch(
       `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook`,
       {
@@ -15,13 +14,12 @@ export default async function handler(req, res) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           url: WEBHOOK_URL,
-          allowed_updates: ['chat_member']
+          allowed_updates: ['message', 'chat_member']
         })
       }
     );
     const webhookData = await webhookRes.json();
 
-    // Setup bot commands
     await fetch(
       `https://api.telegram.org/bot${TELEGRAM_TOKEN}/setMyCommands`,
       {
@@ -29,15 +27,14 @@ export default async function handler(req, res) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           commands: [
-            { command: 'start', description: 'Mulai dan aktifkan kuota member' },
-            { command: 'kuota', description: 'Cek kuota pertanyaan kamu' }
+            { command: 'start', description: 'Aktifkan kuota member 10 pertanyaan/hari' }
           ]
         })
       }
     );
 
-    return res.status(200).json({ 
-      success: true, 
+    return res.status(200).json({
+      success: true,
       webhook: webhookData,
       webhook_url: WEBHOOK_URL
     });
@@ -45,4 +42,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
-
