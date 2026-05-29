@@ -3,181 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Edu Bot</title>
+  <title>Crypto AI</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: #f0f0f0;
-      height: 100vh;
+      background: #050505;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
+      min-height: 100vh;
     }
-
-    #container {
+    #wrap {
+      background: #0a0a0a;
+      border: 0.5px solid #2a2218;
       width: 100%;
       max-width: 720px;
       height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 1.5rem;
     }
-
-    #header {
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #2a2a2a;
-      margin-bottom: 1rem;
-    }
-
-    #header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #f0f0f0;
-    }
-
-    #header p {
-      font-size: 13px;
-      color: #888;
-      margin-top: 4px;
-    }
-
-    #messages {
-      flex: 1;
-      overflow-y: auto;
+    #head {
+      padding: 16px 20px;
+      border-bottom: 0.5px solid #2a2218;
       display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-right: 4px;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
     }
-
-    #messages::-webkit-scrollbar { width: 4px; }
-    #messages::-webkit-scrollbar-track { background: transparent; }
-    #messages::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-    .msg {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .msg.user { flex-direction: row-reverse; }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+    #logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #1a1508;
+      border: 0.5px solid #c9a84c;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 18px;
+    }
+    #headtext h2 {
       font-size: 14px;
+      font-weight: 600;
+      color: #e8d5a3;
+      letter-spacing: 0.3px;
+    }
+    #headtext p {
+      font-size: 11px;
+      color: #6b5c3e;
+      margin-top: 2px;
+    }
+    #status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #6b5c3e;
+    }
+    #statusdot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c9a84c;
+    }
+    #msgwrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 52px;
+      font-weight: 600;
+      color: #c9a84c;
+      opacity: 0.04;
+      letter-spacing: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    #msgs {
+      height: 100%;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    #msgs::-webkit-scrollbar { width: 3px; }
+    #msgs::-webkit-scrollbar-thumb { background: #2a2218; border-radius: 3px; }
+    .msg { display: flex; gap: 10px; align-items: flex-start; }
+    .msg.user { flex-direction: row-reverse; }
+    .av {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
       font-weight: 600;
       flex-shrink: 0;
     }
-
-    .avatar.bot { background: #1a3a2a; color: #4ade80; }
-    .avatar.user { background: #1a1a2e; color: #818cf8; }
-
-    .bubble {
+    .av.bot { background: #1a1508; border: 0.5px solid #c9a84c; color: #c9a84c; }
+    .av.user { background: #1a1a1a; border: 0.5px solid #3a3a3a; color: #888; }
+    .bub {
       max-width: 78%;
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 14px;
-      line-height: 1.7;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      color: #e0e0e0;
+      padding: 11px 15px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      line-height: 1.75;
       white-space: pre-wrap;
     }
-
-    .msg.user .bubble {
-      background: #1a1a2e;
-      border-color: #2a2a4a;
-      color: #e0e0f0;
-    }
-
-    .bubble.loading { color: #666; font-style: italic; }
-
+    .bub.bot { background: #110f08; border: 0.5px solid #2a2218; color: #d4bc8a; }
+    .bub.user { background: #151515; border: 0.5px solid #2a2a2a; color: #aaa; }
+    .bub.typing { color: #6b5c3e; font-style: italic; }
     #chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0 10px;
+      gap: 7px;
+      padding: 10px 20px 8px;
+      flex-shrink: 0;
     }
-
     .chip {
-      font-size: 12px;
-      padding: 6px 14px;
+      font-size: 11.5px;
+      padding: 5px 13px;
       border-radius: 20px;
-      border: 1px solid #2a2a2a;
-      background: #1a1a1a;
-      color: #aaa;
+      border: 0.5px solid #2a2218;
+      background: #0f0d07;
+      color: #8a7040;
       cursor: pointer;
       transition: all 0.15s;
     }
-
-    .chip:hover {
-      border-color: #4ade80;
-      color: #4ade80;
+    .chip:hover { border-color: #c9a84c; color: #c9a84c; }
+    #bottom {
+      padding: 10px 20px 16px;
+      border-top: 0.5px solid #2a2218;
+      flex-shrink: 0;
     }
-
-    #inputrow {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    #inputrow input {
+    #inputrow { display: flex; gap: 8px; }
+    #inp {
       flex: 1;
-      font-size: 14px;
-      padding: 10px 16px;
-      border-radius: 12px;
-      border: 1px solid #2a2a2a;
-      background: #1a1a1a;
-      color: #f0f0f0;
+      font-size: 13.5px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 0.5px solid #2a2218;
+      background: #0f0d07;
+      color: #d4bc8a;
       outline: none;
       transition: border-color 0.15s;
     }
-
-    #inputrow input:focus { border-color: #4ade80; }
-    #inputrow input::placeholder { color: #555; }
-
-    #inputrow button {
-      padding: 10px 18px;
-      border-radius: 12px;
-      border: 1px solid #2a2a2a;
-      background: #1a3a2a;
-      color: #4ade80;
+    #inp:focus { border-color: #c9a84c; }
+    #inp::placeholder { color: #3a2e1a; }
+    #sendbtn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 0.5px solid #c9a84c;
+      background: #1a1508;
+      color: #c9a84c;
       cursor: pointer;
       font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.15s;
+      flex-shrink: 0;
     }
-
-    #inputrow button:hover { background: #1f4a33; }
-    #inputrow button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    #disclaimer {
-      font-size: 11px;
-      color: #444;
-      text-align: center;
-      margin-top: 8px;
-    }
+    #sendbtn:hover { background: #251d0a; }
+    #sendbtn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #disc { font-size: 11px; color: #3a2e1a; text-align: center; margin-top: 8px; }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="header">
-      <h1>🪙 Crypto Edu Bot</h1>
-      <p>Tanya apapun tentang crypto — dijawab dalam Bahasa Indonesia</p>
+  <div id="wrap">
+    <div id="head">
+      <div id="logo">⬡</div>
+      <div id="headtext">
+        <h2>Crypto AI</h2>
+        <p>Edukasi crypto · Bahasa Indonesia</p>
+      </div>
+      <div id="status">
+        <div id="statusdot"></div>
+        Online
+      </div>
     </div>
 
-    <div id="messages">
-      <div class="msg bot">
-        <div class="avatar bot">AI</div>
-        <div class="bubble">Halo! Aku asisten edukasi crypto kamu. Tanya apapun — dari Bitcoin, Ethereum, DeFi, NFT, sampai cara mulai investasi crypto. Semua dijelaskan dengan bahasa yang mudah dipahami. 🚀</div>
+    <div id="msgwrap">
+      <div id="watermark">CRYPTO AI</div>
+      <div id="msgs">
+        <div class="msg bot">
+          <div class="av bot">AI</div>
+          <div class="bub bot">Selamat datang. Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai investasi. Semua dijawab dalam Bahasa Indonesia yang mudah dipahami. 🚀</div>
+        </div>
       </div>
     </div>
 
@@ -185,77 +209,69 @@
       <button class="chip" onclick="sendChip('Apa itu Bitcoin?')">Apa itu Bitcoin?</button>
       <button class="chip" onclick="sendChip('Apa itu DeFi?')">Apa itu DeFi?</button>
       <button class="chip" onclick="sendChip('Bagaimana cara beli crypto pertama kali?')">Cara beli crypto</button>
-      <button class="chip" onclick="sendChip('Apa itu blockchain?')">Apa itu blockchain?</button>
+      <button class="chip" onclick="sendChip('Apa itu blockchain?')">Blockchain</button>
       <button class="chip" onclick="sendChip('Apa perbedaan Bitcoin dan Ethereum?')">BTC vs ETH</button>
     </div>
 
-    <div id="inputrow">
-      <input id="userinput" type="text" placeholder="Tanya tentang crypto..." onkeydown="if(event.key==='Enter') sendMsg()" />
-      <button id="sendbtn" onclick="sendMsg()">➤</button>
+    <div id="bottom">
+      <div id="inputrow">
+        <input id="inp" type="text" placeholder="Tanya tentang crypto..." onkeydown="if(event.key==='Enter') sendMsg()" />
+        <button id="sendbtn" onclick="sendMsg()">➤</button>
+      </div>
+      <div id="disc">⚠️ Hanya untuk edukasi · Bukan saran investasi</div>
     </div>
-
-    <div id="disclaimer">⚠️ Hanya untuk edukasi. Bukan saran investasi.</div>
   </div>
 
   <script>
-    const messages = document.getElementById('messages');
-    const input = document.getElementById('userinput');
+    const msgs = document.getElementById('msgs');
+    const inp = document.getElementById('inp');
     const btn = document.getElementById('sendbtn');
     const history = [];
 
-    function addMsg(role, text, isLoading) {
-      const wrap = document.createElement('div');
-      wrap.className = 'msg ' + role;
+    function addMsg(role, text, typing) {
+      const w = document.createElement('div');
+      w.className = 'msg ' + role;
       const av = document.createElement('div');
-      av.className = 'avatar ' + role;
+      av.className = 'av ' + role;
       av.textContent = role === 'bot' ? 'AI' : 'Kamu';
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble' + (isLoading ? ' loading' : '');
-      bubble.textContent = text;
-      wrap.appendChild(av);
-      wrap.appendChild(bubble);
-      messages.appendChild(wrap);
-      messages.scrollTop = messages.scrollHeight;
-      return bubble;
+      const b = document.createElement('div');
+      b.className = 'bub ' + role + (typing ? ' typing' : '');
+      b.textContent = text;
+      w.appendChild(av);
+      w.appendChild(b);
+      msgs.appendChild(w);
+      msgs.scrollTop = msgs.scrollHeight;
+      return b;
     }
 
-    async function sendChip(text) {
-      input.value = text;
-      await sendMsg();
-    }
+    async function sendChip(t) { inp.value = t; await sendMsg(); }
 
     async function sendMsg() {
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = '';
+      const t = inp.value.trim();
+      if (!t) return;
+      inp.value = '';
       btn.disabled = true;
-
-      addMsg('user', text);
-      history.push({ role: 'user', content: text });
-
-      const loadBubble = addMsg('bot', 'Sedang menjawab...', true);
-
+      addMsg('user', t);
+      history.push({ role: 'user', content: t });
+      const lb = addMsg('bot', 'Sedang menjawab...', true);
       try {
-        const res = await fetch('/api/chat', {
+        const r = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: history })
         });
-
-        const data = await res.json();
-        const reply = data.reply || 'Maaf, ada gangguan. Coba lagi ya.';
-        loadBubble.textContent = reply;
-        loadBubble.classList.remove('loading');
+        const d = await r.json();
+        const reply = d.reply || 'Maaf, ada gangguan. Coba lagi ya.';
+        lb.textContent = reply;
+        lb.classList.remove('typing');
         history.push({ role: 'assistant', content: reply });
-
       } catch (e) {
-        loadBubble.textContent = 'Koneksi bermasalah. Coba lagi.';
-        loadBubble.classList.remove('loading');
+        lb.textContent = 'Koneksi bermasalah. Coba lagi.';
+        lb.classList.remove('typing');
       }
-
       btn.disabled = false;
-      input.focus();
-      messages.scrollTop = messages.scrollHeight;
+      inp.focus();
+      msgs.scrollTop = msgs.scrollHeight;
     }
   </script>
 </body>
