@@ -6,150 +6,76 @@
   <title>Crypto AI</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #050505;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-    #wrap {
-      background: #0a0a0a;
-      border: 0.5px solid #2a2218;
-      width: 100%;
-      max-width: 720px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    #head {
-      padding: 16px 20px;
-      border-bottom: 0.5px solid #2a2218;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-    #logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #1a1508;
-      border: 0.5px solid #c9a84c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    #wrap { background: #0a0a0a; border: 0.5px solid #2a2218; width: 100%; max-width: 720px; height: 100vh; display: flex; flex-direction: column; }
+    #head { padding: 16px 20px; border-bottom: 0.5px solid #2a2218; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    #logo { width: 36px; height: 36px; border-radius: 10px; background: #1a1508; border: 0.5px solid #c9a84c; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     #headtext h2 { font-size: 14px; font-weight: 600; color: #e8d5a3; letter-spacing: 0.3px; }
     #headtext p { font-size: 11px; color: #6b5c3e; margin-top: 2px; }
     #status { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6b5c3e; }
     #statusdot { width: 6px; height: 6px; border-radius: 50%; background: #c9a84c; }
-    #quota-bar {
-      padding: 8px 20px;
-      border-bottom: 0.5px solid #2a2218;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
+    #quota-bar { padding: 8px 20px; border-bottom: 0.5px solid #2a2218; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     #quota-text { font-size: 11px; color: #6b5c3e; }
     #quota-text span { color: #c9a84c; font-weight: 600; }
-    #upgrade-btn {
-      font-size: 11px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 0.5px solid #c9a84c;
-      background: transparent;
-      color: #c9a84c;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
+    #quota-text span.premium { color: #ffd700; }
+    #upgrade-btn { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 0.5px solid #c9a84c; background: transparent; color: #c9a84c; cursor: pointer; text-decoration: none; transition: all 0.15s; }
     #upgrade-btn:hover { background: #1a1508; }
+    #upgrade-btn.premium { color: #ffd700; border-color: #ffd700; pointer-events: none; }
     #msgwrap { flex: 1; position: relative; overflow: hidden; }
-    #watermark {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 52px;
-      font-weight: 600;
-      color: #c9a84c;
-      opacity: 0.04;
-      letter-spacing: 6px;
-      white-space: nowrap;
-      pointer-events: none;
-      user-select: none;
-    }
-    #msgs {
-      height: 100%;
-      overflow-y: auto;
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      position: relative;
-      z-index: 1;
-    }
+    #watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 52px; font-weight: 600; color: #c9a84c; opacity: 0.04; letter-spacing: 6px; white-space: nowrap; pointer-events: none; user-select: none; }
+    #msgs { height: 100%; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 1; }
     #msgs::-webkit-scrollbar { width: 3px; }
     #msgs::-webkit-scrollbar-thumb { background: #2a2218; border-radius: 3px; }
     .msg { display: flex; gap: 10px; align-items: flex-start; }
     .msg.user { flex-direction: row-reverse; }
-    .av {
-      width: 30px; height: 30px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 600; flex-shrink: 0;
-    }
+    .av { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
     .av.bot { background: #1a1508; border: 0.5px solid #c9a84c; color: #c9a84c; }
     .av.user { background: #1a1a1a; border: 0.5px solid #3a3a3a; color: #888; }
-    .bub {
-      max-width: 78%; padding: 11px 15px; border-radius: 12px;
-      font-size: 13.5px; line-height: 1.75; white-space: pre-wrap;
-    }
+    .bub { max-width: 78%; padding: 11px 15px; border-radius: 12px; font-size: 13.5px; line-height: 1.75; white-space: pre-wrap; }
     .bub.bot { background: #110f08; border: 0.5px solid #2a2218; color: #d4bc8a; }
     .bub.user { background: #151515; border: 0.5px solid #2a2a2a; color: #aaa; }
     .bub.typing { color: #6b5c3e; font-style: italic; }
-    .bub.limit {
-      background: #1a1008;
-      border: 0.5px solid #c9a84c;
-      color: #d4bc8a;
-      text-align: center;
-    }
-    .bub.limit a {
-      color: #c9a84c;
-      font-weight: 600;
-      text-decoration: none;
-    }
+    .bub.limit { background: #1a1008; border: 0.5px solid #c9a84c; color: #d4bc8a; text-align: center; }
+    .bub.limit a { color: #c9a84c; font-weight: 600; text-decoration: none; }
     .bub.limit a:hover { text-decoration: underline; }
     #chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 20px 8px; flex-shrink: 0; }
-    .chip {
-      font-size: 11.5px; padding: 5px 13px; border-radius: 20px;
-      border: 0.5px solid #2a2218; background: #0f0d07; color: #8a7040;
-      cursor: pointer; transition: all 0.15s;
-    }
+    .chip { font-size: 11.5px; padding: 5px 13px; border-radius: 20px; border: 0.5px solid #2a2218; background: #0f0d07; color: #8a7040; cursor: pointer; transition: all 0.15s; }
     .chip:hover { border-color: #c9a84c; color: #c9a84c; }
     .chip:disabled { opacity: 0.3; cursor: not-allowed; }
     #bottom { padding: 10px 20px 16px; border-top: 0.5px solid #2a2218; flex-shrink: 0; }
     #inputrow { display: flex; gap: 8px; }
-    #inp {
-      flex: 1; font-size: 13.5px; padding: 10px 15px; border-radius: 10px;
-      border: 0.5px solid #2a2218; background: #0f0d07; color: #d4bc8a;
-      outline: none; transition: border-color 0.15s;
-    }
+    #inp { flex: 1; font-size: 13.5px; padding: 10px 15px; border-radius: 10px; border: 0.5px solid #2a2218; background: #0f0d07; color: #d4bc8a; outline: none; transition: border-color 0.15s; }
     #inp:focus { border-color: #c9a84c; }
     #inp::placeholder { color: #3a2e1a; }
     #inp:disabled { opacity: 0.4; cursor: not-allowed; }
-    #sendbtn {
-      width: 40px; height: 40px; border-radius: 10px;
-      border: 0.5px solid #c9a84c; background: #1a1508; color: #c9a84c;
-      cursor: pointer; font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s; flex-shrink: 0;
-    }
+    #sendbtn { width: 40px; height: 40px; border-radius: 10px; border: 0.5px solid #c9a84c; background: #1a1508; color: #c9a84c; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
     #sendbtn:hover { background: #251d0a; }
     #sendbtn:disabled { opacity: 0.3; cursor: not-allowed; }
     #disc { font-size: 11px; color: #3a2e1a; text-align: center; margin-top: 8px; }
+
+    /* Modal Premium */
+    #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+    #modal-overlay.show { display: flex; }
+    #modal { background: #0f0d07; border: 0.5px solid #c9a84c; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; }
+    #modal h3 { color: #e8d5a3; font-size: 16px; margin-bottom: 8px; }
+    #modal p { color: #6b5c3e; font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+    #modal .price-box { background: #1a1508; border: 0.5px solid #2a2218; border-radius: 10px; padding: 12px; margin-bottom: 16px; }
+    #modal .price-regular { color: #888; font-size: 12px; text-decoration: line-through; }
+    #modal .price-eb { color: #ffd700; font-size: 18px; font-weight: 600; }
+    #modal .price-note { color: #6b5c3e; font-size: 11px; margin-top: 4px; }
+    #modal .price-normal { color: #c9a84c; font-size: 16px; font-weight: 600; }
+    #code-input { width: 100%; font-size: 14px; padding: 10px 14px; border-radius: 10px; border: 0.5px solid #2a2218; background: #0a0a0a; color: #d4bc8a; outline: none; margin-bottom: 8px; letter-spacing: 2px; text-transform: uppercase; }
+    #code-input:focus { border-color: #c9a84c; }
+    #code-msg { font-size: 12px; margin-bottom: 12px; min-height: 16px; }
+    #code-msg.success { color: #4ade80; }
+    #code-msg.error { color: #f87171; }
+    .modal-btn { width: 100%; padding: 11px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; margin-bottom: 8px; }
+    .btn-primary { background: #1a1508; border: 0.5px solid #c9a84c; color: #c9a84c; }
+    .btn-primary:hover { background: #251d0a; }
+    .btn-secondary { background: transparent; border: 0.5px solid #2a2218; color: #6b5c3e; }
+    .btn-secondary:hover { border-color: #6b5c3e; }
+    #eb-counter { background: #1a0a00; border: 0.5px solid #c9a84c33; border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; font-size: 12px; color: #8a7040; text-align: center; }
+    #eb-counter span { color: #ffd700; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -168,7 +94,7 @@
 
     <div id="quota-bar">
       <div id="quota-text">Sisa hari ini: <span id="quota-count">5</span> pertanyaan</div>
-      <a id="upgrade-btn" href="https://t.me/belajarcryptoid" target="_blank">+ Dapat 10 pertanyaan</a>
+      <button id="upgrade-btn" onclick="showModal()">⚡ Upgrade Premium</button>
     </div>
 
     <div id="msgwrap">
@@ -178,10 +104,12 @@
           <div class="av bot">AI</div>
           <div class="bub bot">Selamat datang di Crypto AI! 🪙
 
-Kamu punya 5 pertanyaan gratis hari ini. Join channel kami untuk dapat 10 pertanyaan/hari:
-👉 t.me/belajarcryptoid
+Kamu punya 5 pertanyaan gratis hari ini.
+Join channel untuk dapat 10 pertanyaan/hari: t.me/BelajarCryptoID06
 
-Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai investasi. Semua dalam Bahasa Indonesia! 🚀</div>
+Atau upgrade Premium untuk pertanyaan unlimited! ⚡
+
+Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai investasi. 🚀</div>
         </div>
       </div>
     </div>
@@ -203,6 +131,37 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
     </div>
   </div>
 
+  <!-- Modal Premium -->
+  <div id="modal-overlay">
+    <div id="modal">
+      <h3>⚡ Upgrade ke Premium</h3>
+      <p>Dapatkan pertanyaan <strong style="color:#c9a84c">unlimited</strong> setiap hari tanpa batas!</p>
+
+      <div id="eb-counter">
+        🔥 Early Bird: <span id="eb-remaining">10</span> slot tersisa · Harga spesial selamanya!
+      </div>
+
+      <div class="price-box" id="price-display">
+        <div class="price-regular">Rp 100.000/bulan</div>
+        <div class="price-eb">Rp 75.000/bulan</div>
+        <div class="price-note">Harga Early Bird — berlaku selamanya selama aktif</div>
+      </div>
+
+      <p style="font-size:12px; margin-bottom:12px;">Cara bayar:<br>
+        1. Transfer ke GoPay/OVO/Dana kamu<br>
+        2. Kirim bukti bayar ke <strong style="color:#c9a84c">@marchoadhari023</strong><br>
+        3. Kamu akan dapat kode akses unik<br>
+        4. Input kode di bawah ini
+      </p>
+
+      <input id="code-input" type="text" placeholder="MASUKKAN KODE AKSES" maxlength="20" oninput="this.value=this.value.toUpperCase()" />
+      <div id="code-msg"></div>
+
+      <button class="modal-btn btn-primary" onclick="activatePremium()">✓ Aktifkan Kode</button>
+      <button class="modal-btn btn-secondary" onclick="closeModal()">Nanti saja</button>
+    </div>
+  </div>
+
   <script>
     const msgs = document.getElementById('msgs');
     const inp = document.getElementById('inp');
@@ -212,12 +171,14 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
 
     const FREE_LIMIT = 5;
     const MEMBER_LIMIT = 10;
-    const CHANNEL_URL = 'https://t.me/belajarcryptoid';
     const STORAGE_KEY = 'cryptoai_usage';
+    const PREMIUM_KEY = 'cryptoai_premium';
+    const EB_KEY = 'cryptoai_eb_count';
+    const CHANNEL_URL = 'https://t.me/BelajarCryptoID06';
+    const ADMIN_TELEGRAM = '@marchoadhari023';
+    const TOTAL_EB_SLOTS = 10;
 
-    function getToday() {
-      return new Date().toISOString().split('T')[0];
-    }
+    function getToday() { return new Date().toISOString().split('T')[0]; }
 
     function getUsage() {
       try {
@@ -229,27 +190,39 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
       } catch { return { date: getToday(), count: 0, isMember: false }; }
     }
 
-    function saveUsage(data) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+    function saveUsage(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {} }
+
+    function getPremium() {
+      try { return JSON.parse(localStorage.getItem(PREMIUM_KEY) || 'null'); } catch { return null; }
     }
 
+    function isPremium() { return getPremium() !== null; }
+
     function getLimit() {
+      if (isPremium()) return 999999;
       return getUsage().isMember ? MEMBER_LIMIT : FREE_LIMIT;
+    }
+
+    function getEBCount() {
+      try { return parseInt(localStorage.getItem(EB_KEY) || '0'); } catch { return 0; }
     }
 
     function updateQuotaDisplay() {
       const usage = getUsage();
       const limit = getLimit();
-      const remaining = Math.max(0, limit - usage.count);
+      const remaining = isPremium() ? '∞' : Math.max(0, limit - usage.count);
       quotaCount.textContent = remaining;
+
       const upgradeBtn = document.getElementById('upgrade-btn');
-      if (usage.isMember) {
-        upgradeBtn.textContent = '✓ Member · 10/hari';
-        upgradeBtn.style.color = '#4ade80';
-        upgradeBtn.style.borderColor = '#4ade80';
-        upgradeBtn.style.pointerEvents = 'none';
+      if (isPremium()) {
+        const p = getPremium();
+        quotaCount.className = 'premium';
+        document.getElementById('quota-text').innerHTML = `Status: <span class="premium">⚡ Premium ${p.type === 'earlybird' ? 'Early Bird' : ''}</span>`;
+        upgradeBtn.textContent = '⚡ Premium Aktif';
+        upgradeBtn.className = 'premium';
       }
-      if (remaining === 0) {
+
+      if (!isPremium() && remaining === 0) {
         inp.disabled = true;
         btn.disabled = true;
         document.querySelectorAll('.chip').forEach(c => c.disabled = true);
@@ -258,12 +231,91 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
 
     function checkMemberCode() {
       const hash = window.location.hash;
-      if (hash === "#member" || hash.startsWith("#member-")) {
+      if (hash === '#member' || hash.startsWith('#member-')) {
         const usage = getUsage();
         usage.isMember = true;
         saveUsage(usage);
         window.location.hash = '';
         updateQuotaDisplay();
+        addMsg('bot', 'Selamat! Kamu sekarang member Belajar Crypto ID. Kamu dapat 10 pertanyaan/hari. Silakan lanjut bertanya! 🎉');
+        inp.disabled = false;
+        btn.disabled = false;
+        document.querySelectorAll('.chip').forEach(c => c.disabled = false);
+      }
+    }
+
+    function showModal() {
+      const ebUsed = getEBCount();
+      const ebRemaining = Math.max(0, TOTAL_EB_SLOTS - ebUsed);
+      document.getElementById('eb-remaining').textContent = ebRemaining;
+
+      const priceDisplay = document.getElementById('price-display');
+      if (ebRemaining <= 0) {
+        priceDisplay.innerHTML = '<div class="price-normal">Rp 100.000/bulan</div><div class="price-note">Harga reguler</div>';
+        document.getElementById('eb-counter').style.display = 'none';
+      }
+      document.getElementById('modal-overlay').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('show');
+      document.getElementById('code-msg').textContent = '';
+      document.getElementById('code-input').value = '';
+    }
+
+    async function activatePremium() {
+      const code = document.getElementById('code-input').value.trim().toUpperCase();
+      const codeMsg = document.getElementById('code-msg');
+
+      if (!code) {
+        codeMsg.textContent = 'Masukkan kode akses dulu.';
+        codeMsg.className = 'error';
+        return;
+      }
+
+      codeMsg.textContent = 'Memverifikasi kode...';
+      codeMsg.className = '';
+
+      try {
+        const r = await fetch('/api/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const d = await r.json();
+
+        if (d.success) {
+          // Simpan status premium
+          localStorage.setItem(PREMIUM_KEY, JSON.stringify({
+            code,
+            type: d.type,
+            activatedAt: new Date().toISOString()
+          }));
+
+          // Update EB counter
+          if (d.type === 'earlybird') {
+            const current = getEBCount();
+            localStorage.setItem(EB_KEY, (current + 1).toString());
+          }
+
+          codeMsg.textContent = '✓ ' + d.message;
+          codeMsg.className = 'success';
+
+          setTimeout(() => {
+            closeModal();
+            updateQuotaDisplay();
+            inp.disabled = false;
+            btn.disabled = false;
+            document.querySelectorAll('.chip').forEach(c => c.disabled = false);
+            addMsg('bot', `🎉 Selamat! Premium ${d.type === 'earlybird' ? 'Early Bird' : ''} kamu sudah aktif!\n\nSekarang kamu bisa tanya unlimited setiap hari tanpa batas. Tanya apapun tentang crypto! 🚀`);
+          }, 1500);
+        } else {
+          codeMsg.textContent = '✗ ' + d.message;
+          codeMsg.className = 'error';
+        }
+      } catch (e) {
+        codeMsg.textContent = 'Koneksi bermasalah. Coba lagi.';
+        codeMsg.className = 'error';
       }
     }
 
@@ -272,11 +324,17 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
       w.className = 'msg ' + (isLimit ? 'bot' : role);
       const av = document.createElement('div');
       av.className = 'av bot';
-      av.textContent = 'AI';
+      av.textContent = role === 'user' ? 'Kamu' : 'AI';
+      if (role === 'user') { av.className = 'av user'; }
       const b = document.createElement('div');
       b.className = 'bub ' + (isLimit ? 'limit' : role) + (typing ? ' typing' : '');
       if (isLimit) {
-        b.innerHTML = `Kamu sudah pakai <strong>${FREE_LIMIT} pertanyaan</strong> gratis hari ini. 🎯<br><br>Join channel kami untuk dapat <strong>10 pertanyaan/hari</strong> gratis:<br><br><a href="${CHANNEL_URL}" target="_blank">👉 Gabung Belajar Crypto ID</a><br><br>Sudah join? Klik link ini untuk aktifkan: <a href="#member" onclick="activateMember()">Aktifkan Member</a>`;
+        b.innerHTML = `Kamu sudah pakai <strong>semua pertanyaan</strong> hari ini. 🎯<br><br>
+          <strong>Pilihan kamu:</strong><br><br>
+          👥 Join channel gratis (10/hari):<br>
+          <a href="${CHANNEL_URL}" target="_blank">t.me/BelajarCryptoID06</a><br><br>
+          ⚡ Atau upgrade Premium unlimited:<br>
+          <a href="#" onclick="showModal(); return false;">Lihat paket Premium →</a>`;
       } else {
         b.textContent = text;
       }
@@ -285,21 +343,6 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
       msgs.appendChild(w);
       msgs.scrollTop = msgs.scrollHeight;
       return b;
-    }
-
-    window.activateMember = function() {
-      const usage = getUsage();
-      usage.isMember = true;
-      saveUsage(usage);
-      updateQuotaDisplay();
-      const confirmMsg = document.createElement('div');
-      confirmMsg.className = 'msg bot';
-      confirmMsg.innerHTML = '<div class="av bot">AI</div><div class="bub bot">Selamat! Kamu sekarang member Belajar Crypto ID. Kamu dapat 10 pertanyaan/hari. Silakan lanjut bertanya! 🎉</div>';
-      msgs.appendChild(confirmMsg);
-      msgs.scrollTop = msgs.scrollHeight;
-      inp.disabled = false;
-      btn.disabled = false;
-      document.querySelectorAll('.chip').forEach(c => c.disabled = false);
     }
 
     async function sendChip(t) { inp.value = t; await sendMsg(); }
@@ -311,7 +354,7 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
       const usage = getUsage();
       const limit = getLimit();
 
-      if (usage.count >= limit) {
+      if (!isPremium() && usage.count >= limit) {
         addMsg('bot', '', false, true);
         inp.value = '';
         inp.disabled = true;
@@ -324,9 +367,11 @@ Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai in
       addMsg('user', t);
       history.push({ role: 'user', content: t });
 
-      usage.count += 1;
-      saveUsage(usage);
-      updateQuotaDisplay();
+      if (!isPremium()) {
+        usage.count += 1;
+        saveUsage(usage);
+        updateQuotaDisplay();
+      }
 
       const lb = addMsg('bot', 'Sedang menjawab...', true);
 
