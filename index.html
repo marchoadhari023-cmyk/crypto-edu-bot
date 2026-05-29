@@ -42,40 +42,36 @@
       justify-content: center;
       font-size: 18px;
     }
-    #headtext h2 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e8d5a3;
-      letter-spacing: 0.3px;
-    }
-    #headtext p {
-      font-size: 11px;
-      color: #6b5c3e;
-      margin-top: 2px;
-    }
-    #status {
-      margin-left: auto;
+    #headtext h2 { font-size: 14px; font-weight: 600; color: #e8d5a3; letter-spacing: 0.3px; }
+    #headtext p { font-size: 11px; color: #6b5c3e; margin-top: 2px; }
+    #status { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6b5c3e; }
+    #statusdot { width: 6px; height: 6px; border-radius: 50%; background: #c9a84c; }
+    #quota-bar {
+      padding: 8px 20px;
+      border-bottom: 0.5px solid #2a2218;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    #quota-text { font-size: 11px; color: #6b5c3e; }
+    #quota-text span { color: #c9a84c; font-weight: 600; }
+    #upgrade-btn {
       font-size: 11px;
-      color: #6b5c3e;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 0.5px solid #c9a84c;
+      background: transparent;
+      color: #c9a84c;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
     }
-    #statusdot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #c9a84c;
-    }
-    #msgwrap {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
+    #upgrade-btn:hover { background: #1a1508; }
+    #msgwrap { flex: 1; position: relative; overflow: hidden; }
     #watermark {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-size: 52px;
       font-weight: 600;
@@ -101,80 +97,55 @@
     .msg { display: flex; gap: 10px; align-items: flex-start; }
     .msg.user { flex-direction: row-reverse; }
     .av {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 600;
-      flex-shrink: 0;
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; flex-shrink: 0;
     }
     .av.bot { background: #1a1508; border: 0.5px solid #c9a84c; color: #c9a84c; }
     .av.user { background: #1a1a1a; border: 0.5px solid #3a3a3a; color: #888; }
     .bub {
-      max-width: 78%;
-      padding: 11px 15px;
-      border-radius: 12px;
-      font-size: 13.5px;
-      line-height: 1.75;
-      white-space: pre-wrap;
+      max-width: 78%; padding: 11px 15px; border-radius: 12px;
+      font-size: 13.5px; line-height: 1.75; white-space: pre-wrap;
     }
     .bub.bot { background: #110f08; border: 0.5px solid #2a2218; color: #d4bc8a; }
     .bub.user { background: #151515; border: 0.5px solid #2a2a2a; color: #aaa; }
     .bub.typing { color: #6b5c3e; font-style: italic; }
-    #chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      padding: 10px 20px 8px;
-      flex-shrink: 0;
+    .bub.limit {
+      background: #1a1008;
+      border: 0.5px solid #c9a84c;
+      color: #d4bc8a;
+      text-align: center;
     }
+    .bub.limit a {
+      color: #c9a84c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .bub.limit a:hover { text-decoration: underline; }
+    #chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 20px 8px; flex-shrink: 0; }
     .chip {
-      font-size: 11.5px;
-      padding: 5px 13px;
-      border-radius: 20px;
-      border: 0.5px solid #2a2218;
-      background: #0f0d07;
-      color: #8a7040;
-      cursor: pointer;
-      transition: all 0.15s;
+      font-size: 11.5px; padding: 5px 13px; border-radius: 20px;
+      border: 0.5px solid #2a2218; background: #0f0d07; color: #8a7040;
+      cursor: pointer; transition: all 0.15s;
     }
     .chip:hover { border-color: #c9a84c; color: #c9a84c; }
-    #bottom {
-      padding: 10px 20px 16px;
-      border-top: 0.5px solid #2a2218;
-      flex-shrink: 0;
-    }
+    .chip:disabled { opacity: 0.3; cursor: not-allowed; }
+    #bottom { padding: 10px 20px 16px; border-top: 0.5px solid #2a2218; flex-shrink: 0; }
     #inputrow { display: flex; gap: 8px; }
     #inp {
-      flex: 1;
-      font-size: 13.5px;
-      padding: 10px 15px;
-      border-radius: 10px;
-      border: 0.5px solid #2a2218;
-      background: #0f0d07;
-      color: #d4bc8a;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; font-size: 13.5px; padding: 10px 15px; border-radius: 10px;
+      border: 0.5px solid #2a2218; background: #0f0d07; color: #d4bc8a;
+      outline: none; transition: border-color 0.15s;
     }
     #inp:focus { border-color: #c9a84c; }
     #inp::placeholder { color: #3a2e1a; }
+    #inp:disabled { opacity: 0.4; cursor: not-allowed; }
     #sendbtn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 0.5px solid #c9a84c;
-      background: #1a1508;
-      color: #c9a84c;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 10px;
+      border: 0.5px solid #c9a84c; background: #1a1508; color: #c9a84c;
+      cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
     }
     #sendbtn:hover { background: #251d0a; }
     #sendbtn:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -195,12 +166,22 @@
       </div>
     </div>
 
+    <div id="quota-bar">
+      <div id="quota-text">Sisa hari ini: <span id="quota-count">5</span> pertanyaan</div>
+      <a id="upgrade-btn" href="https://t.me/belajarcryptoid" target="_blank">+ Dapat 10 pertanyaan</a>
+    </div>
+
     <div id="msgwrap">
       <div id="watermark">CRYPTO AI</div>
       <div id="msgs">
         <div class="msg bot">
           <div class="av bot">AI</div>
-          <div class="bub bot">Selamat datang. Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai investasi. Semua dijawab dalam Bahasa Indonesia yang mudah dipahami. 🚀</div>
+          <div class="bub bot">Selamat datang di Crypto AI! 🪙
+
+Kamu punya 5 pertanyaan gratis hari ini. Join channel kami untuk dapat 15 pertanyaan/hari:
+👉 t.me/belajarcryptoid
+
+Tanya apapun tentang crypto — Bitcoin, Ethereum, DeFi, NFT, atau cara mulai investasi. Semua dalam Bahasa Indonesia! 🚀</div>
         </div>
       </div>
     </div>
@@ -226,17 +207,79 @@
     const msgs = document.getElementById('msgs');
     const inp = document.getElementById('inp');
     const btn = document.getElementById('sendbtn');
+    const quotaCount = document.getElementById('quota-count');
     const history = [];
 
-    function addMsg(role, text, typing) {
+    const FREE_LIMIT = 5;
+    const MEMBER_LIMIT = 10;
+    const CHANNEL_URL = 'https://t.me/belajarcryptoid';
+    const STORAGE_KEY = 'cryptoai_usage';
+
+    function getToday() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function getUsage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { date: getToday(), count: 0, isMember: false };
+        const data = JSON.parse(raw);
+        if (data.date !== getToday()) return { date: getToday(), count: 0, isMember: data.isMember || false };
+        return data;
+      } catch { return { date: getToday(), count: 0, isMember: false }; }
+    }
+
+    function saveUsage(data) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+    }
+
+    function getLimit() {
+      return getUsage().isMember ? MEMBER_LIMIT : FREE_LIMIT;
+    }
+
+    function updateQuotaDisplay() {
+      const usage = getUsage();
+      const limit = getLimit();
+      const remaining = Math.max(0, limit - usage.count);
+      quotaCount.textContent = remaining;
+      const upgradeBtn = document.getElementById('upgrade-btn');
+      if (usage.isMember) {
+        upgradeBtn.textContent = '✓ Member · 10/hari';
+        upgradeBtn.style.color = '#4ade80';
+        upgradeBtn.style.borderColor = '#4ade80';
+        upgradeBtn.style.pointerEvents = 'none';
+      }
+      if (remaining === 0) {
+        inp.disabled = true;
+        btn.disabled = true;
+        document.querySelectorAll('.chip').forEach(c => c.disabled = true);
+      }
+    }
+
+    function checkMemberCode() {
+      const hash = window.location.hash;
+      if (hash === '#member') {
+        const usage = getUsage();
+        usage.isMember = true;
+        saveUsage(usage);
+        window.location.hash = '';
+        updateQuotaDisplay();
+      }
+    }
+
+    function addMsg(role, text, typing, isLimit) {
       const w = document.createElement('div');
-      w.className = 'msg ' + role;
+      w.className = 'msg ' + (isLimit ? 'bot' : role);
       const av = document.createElement('div');
-      av.className = 'av ' + role;
-      av.textContent = role === 'bot' ? 'AI' : 'Kamu';
+      av.className = 'av bot';
+      av.textContent = 'AI';
       const b = document.createElement('div');
-      b.className = 'bub ' + role + (typing ? ' typing' : '');
-      b.textContent = text;
+      b.className = 'bub ' + (isLimit ? 'limit' : role) + (typing ? ' typing' : '');
+      if (isLimit) {
+        b.innerHTML = `Kamu sudah pakai <strong>${FREE_LIMIT} pertanyaan</strong> gratis hari ini. 🎯<br><br>Join channel kami untuk dapat <strong>10 pertanyaan/hari</strong> gratis:<br><br><a href="${CHANNEL_URL}" target="_blank">👉 Gabung Belajar Crypto ID</a><br><br>Sudah join? Klik link ini untuk aktifkan: <a href="#member" onclick="activateMember()">Aktifkan Member</a>`;
+      } else {
+        b.textContent = text;
+      }
       w.appendChild(av);
       w.appendChild(b);
       msgs.appendChild(w);
@@ -244,16 +287,49 @@
       return b;
     }
 
+    window.activateMember = function() {
+      const usage = getUsage();
+      usage.isMember = true;
+      saveUsage(usage);
+      updateQuotaDisplay();
+      const confirmMsg = document.createElement('div');
+      confirmMsg.className = 'msg bot';
+      confirmMsg.innerHTML = '<div class="av bot">AI</div><div class="bub bot">Selamat! Kamu sekarang member Belajar Crypto ID. Kamu dapat 10 pertanyaan/hari. Silakan lanjut bertanya! 🎉</div>';
+      msgs.appendChild(confirmMsg);
+      msgs.scrollTop = msgs.scrollHeight;
+      inp.disabled = false;
+      btn.disabled = false;
+      document.querySelectorAll('.chip').forEach(c => c.disabled = false);
+    }
+
     async function sendChip(t) { inp.value = t; await sendMsg(); }
 
     async function sendMsg() {
       const t = inp.value.trim();
       if (!t) return;
+
+      const usage = getUsage();
+      const limit = getLimit();
+
+      if (usage.count >= limit) {
+        addMsg('bot', '', false, true);
+        inp.value = '';
+        inp.disabled = true;
+        btn.disabled = true;
+        return;
+      }
+
       inp.value = '';
       btn.disabled = true;
       addMsg('user', t);
       history.push({ role: 'user', content: t });
+
+      usage.count += 1;
+      saveUsage(usage);
+      updateQuotaDisplay();
+
       const lb = addMsg('bot', 'Sedang menjawab...', true);
+
       try {
         const r = await fetch('/api/chat', {
           method: 'POST',
@@ -269,10 +345,14 @@
         lb.textContent = 'Koneksi bermasalah. Coba lagi.';
         lb.classList.remove('typing');
       }
+
       btn.disabled = false;
       inp.focus();
       msgs.scrollTop = msgs.scrollHeight;
     }
+
+    checkMemberCode();
+    updateQuotaDisplay();
   </script>
 </body>
 </html>
