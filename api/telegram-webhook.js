@@ -1,3 +1,14 @@
+function generateMemberCode(userId) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'MB-';
+  const seed = userId.toString();
+  for (let i = 0; i < 6; i++) {
+    const idx = (parseInt(seed[i % seed.length]) + i * 7) % chars.length;
+    code += chars[idx];
+  }
+  return code;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -10,7 +21,7 @@ export default async function handler(req, res) {
   try {
     const update = req.body;
 
-    // Handle pesan /start di DM bot
+    // Handle /start di DM bot
     if (update.message) {
       const msg = update.message;
       const isPrivate = msg.chat.type === 'private';
@@ -19,14 +30,14 @@ export default async function handler(req, res) {
       if (isPrivate && isStart) {
         const userId = msg.from.id;
         const firstName = msg.from.first_name || 'Kamu';
-        const activationLink = `${CHATBOT_URL}/#member-${userId}`;
+        const memberCode = generateMemberCode(userId);
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: userId,
-            text: `👋 Halo ${firstName}! Selamat datang di Belajar Crypto ID! 🎉\n\nSebagai member, kamu dapat *10 pertanyaan/hari* di Crypto AI kami!\n\nKlik link di bawah untuk aktifkan kuota member kamu:\n👉 ${activationLink}\n\nSelamat belajar crypto! 🚀`,
+            text: `👋 Halo ${firstName}! Selamat datang di Belajar Crypto ID!\n\n🎉 Kamu dapat *10 pertanyaan/hari* sebagai member!\n\nKode aktivasi kamu:\n\`${memberCode}\`\n\nCara pakai:\n1. Buka chatbot: ${CHATBOT_URL}\n2. Klik tombol *"Punya kode member?"*\n3. Masukkan kode di atas\n4. Kuota 10/hari langsung aktif! ✅\n\n_Simpan kode ini ya, bisa dipakai kapan saja!_`,
             parse_mode: 'Markdown'
           })
         });
@@ -48,7 +59,7 @@ export default async function handler(req, res) {
       if (isOurGroup && isNewMember && user && !user.is_bot) {
         const userId = user.id;
         const firstName = user.first_name || 'Kamu';
-        const activationLink = `${CHATBOT_URL}/#member-${userId}`;
+        const memberCode = generateMemberCode(userId);
 
         try {
           await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
@@ -56,12 +67,12 @@ export default async function handler(req, res) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: userId,
-              text: `👋 Halo ${firstName}! Selamat bergabung di Member Belajar Crypto! 🎉\n\nSebagai member, kamu dapat *10 pertanyaan/hari* di Crypto AI kami!\n\nKlik link di bawah untuk aktifkan kuota member kamu:\n👉 ${activationLink}\n\nSelamat belajar crypto! 🚀`,
+              text: `👋 Halo ${firstName}! Selamat bergabung di Member Belajar Crypto! 🎉\n\nKamu dapat *10 pertanyaan/hari* di Crypto AI kami!\n\nKode aktivasi kamu:\n\`${memberCode}\`\n\nCara pakai:\n1. Buka chatbot: ${CHATBOT_URL}\n2. Klik tombol *"Punya kode member?"*\n3. Masukkan kode di atas\n4. Kuota 10/hari langsung aktif! ✅\n\n_Simpan kode ini ya, bisa dipakai kapan saja!_`,
               parse_mode: 'Markdown'
             })
           });
-        } catch (dmError) {
-          console.log('Could not send DM to user:', userId, dmError.message);
+        } catch (e) {
+          console.log('Could not send DM:', e.message);
         }
       }
     }
