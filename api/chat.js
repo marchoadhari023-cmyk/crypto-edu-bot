@@ -16,26 +16,17 @@ async function getMarketData(userMessage) {
   let marketContext = '';
 
   const cryptoMap = {
-    'bitcoin': 'bitcoin', 'btc': 'bitcoin',
-    'ethereum': 'ethereum', 'eth': 'ethereum',
-    'bnb': 'binancecoin', 'binance': 'binancecoin',
-    'solana': 'solana', 'sol': 'solana',
-    'xrp': 'ripple', 'ripple': 'ripple',
-    'cardano': 'cardano', 'ada': 'cardano',
-    'dogecoin': 'dogecoin', 'doge': 'dogecoin',
-    'polkadot': 'polkadot', 'dot': 'polkadot',
-    'polygon': 'matic-network', 'matic': 'matic-network',
-    'avalanche': 'avalanche-2', 'avax': 'avalanche-2',
-    'chainlink': 'chainlink', 'link': 'chainlink',
-    'uniswap': 'uniswap', 'uni': 'uniswap',
-    'litecoin': 'litecoin', 'ltc': 'litecoin',
-    'cosmos': 'cosmos', 'atom': 'cosmos',
-    'near': 'near', 'fantom': 'fantom', 'ftm': 'fantom',
-    'arbitrum': 'arbitrum', 'arb': 'arbitrum',
-    'optimism': 'optimism', 'sui': 'sui',
-    'aptos': 'aptos', 'apt': 'aptos',
-    'pepe': 'pepe', 'shiba': 'shiba-inu', 'shib': 'shiba-inu',
-    'ton': 'the-open-network', 'tron': 'tron', 'trx': 'tron'
+    'bitcoin':'bitcoin','btc':'bitcoin','ethereum':'ethereum','eth':'ethereum',
+    'bnb':'binancecoin','solana':'solana','sol':'solana','xrp':'ripple',
+    'ripple':'ripple','cardano':'cardano','ada':'cardano','dogecoin':'dogecoin',
+    'doge':'dogecoin','polkadot':'polkadot','dot':'polkadot','polygon':'matic-network',
+    'matic':'matic-network','avalanche':'avalanche-2','avax':'avalanche-2',
+    'chainlink':'chainlink','link':'chainlink','uniswap':'uniswap','uni':'uniswap',
+    'litecoin':'litecoin','ltc':'litecoin','cosmos':'cosmos','atom':'cosmos',
+    'near':'near','fantom':'fantom','ftm':'fantom','arbitrum':'arbitrum',
+    'arb':'arbitrum','optimism':'optimism','sui':'sui','aptos':'aptos','apt':'aptos',
+    'pepe':'pepe','shiba':'shiba-inu','shib':'shiba-inu',
+    'ton':'the-open-network','tron':'tron','trx':'tron'
   };
 
   let detectedCoin = null;
@@ -74,14 +65,13 @@ async function getMarketData(userMessage) {
   }
 
   const forexMap = {
-    'usd/idr': ['USD','IDR'], 'dolar': ['USD','IDR'],
-    'euro': ['EUR','IDR'], 'eur/usd': ['EUR','USD'],
-    'pound': ['GBP','IDR'], 'gbp': ['GBP','USD'],
-    'yen': ['JPY','IDR'], 'sgd': ['SGD','IDR']
+    'usd/idr':['USD','IDR'],'dolar':['USD','IDR'],'euro':['EUR','IDR'],
+    'eur/usd':['EUR','USD'],'pound':['GBP','IDR'],'gbp':['GBP','USD'],
+    'yen':['JPY','IDR'],'sgd':['SGD','IDR']
   };
 
   for (const [key, [from, to]] of Object.entries(forexMap)) {
-    if (msg.includes(key) && (msg.includes('kurs') || msg.includes('rate') || msg.includes('harga') || msg.includes('nilai'))) {
+    if (msg.includes(key) && (msg.includes('kurs')||msg.includes('rate')||msg.includes('harga')||msg.includes('nilai'))) {
       try {
         const r = await fetchWithTimeout(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
         if (r && r.ok) {
@@ -99,7 +89,7 @@ async function getMarketData(userMessage) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { messages, isMember } = req.body;
+  const { messages, isMember, tier } = req.body;
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'Invalid messages' });
 
   try {
@@ -109,38 +99,54 @@ export default async function handler(req, res) {
       : lastMessage?.content || '';
 
     const marketData = await getMarketData(lastText);
+    const marketContext = marketData ? `\nDATA REAL-TIME:\n${marketData}` : '';
 
-    const freePrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia yang cerdas dan helpful.
+    let systemPrompt = '';
 
-Kamu sedang melayani pengguna GRATIS. Berikan jawaban yang:
+    if (tier === 'premiumplus') {
+      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market premium terbaik Indonesia.
+
+Kamu melayani PREMIUM+ MEMBER — level tertinggi. Berikan yang terbaik:
+- Analisis sangat mendalam dan komprehensif
+- Untuk chart: full technical analysis — trend, support/resistance, pattern, indikator, volume, proyeksi
+- Untuk harga: konteks makro global, sentimen institusional, on-chain data jika relevan, outlook konkret
+- Berikan setup trading spesifik bila relevan — entry, SL, TP, risk/reward
+- Gunakan bahasa expert yang tetap mudah dipahami
+- Personal dan engaging — seperti mentor senior yang benar-benar peduli
+- Boleh lebih panjang dan detail dari biasanya
+${marketContext}
+
+Ingatkan ini edukasi bukan saran investasi — secara natural, tidak kaku.
+Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange terbaik untuk pemula.`;
+
+    } else if (tier === 'premium' || isMember) {
+      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia yang expert dan helpful.
+
+Kamu melayani PREMIUM MEMBER. Berikan jawaban yang:
+- Mendalam dan informatif — 3-4 paragraf
+- Untuk chart: analisis teknikal solid — trend, support/resistance, indikator utama
+- Untuk harga: konteks market, sentimen, level penting, outlook singkat
+- Bahasa natural dan engaging seperti teman yang expert
+- Berikan insight yang actionable
+${marketContext}
+
+Ingatkan ini edukasi bukan saran investasi.
+Rekomendasikan Pintu hanya jika ditanya exchange terbaik untuk pemula.`;
+
+    } else {
+      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia.
+
+Kamu melayani FREE USER. Berikan jawaban yang:
 - Informatif tapi SINGKAT — maksimal 2 paragraf pendek
-- Kasih cukup info untuk membuat penasaran, tapi tidak lengkap
-- Untuk analisis chart: sebut 1-2 hal yang terlihat, tapi tidak detail
-- Untuk harga: sebutkan harga dan pergerakan 24h, tanpa analisis mendalam
-- Di akhir jawaban, secara natural hint bahwa ada analisis lebih dalam untuk member
-- Jangan pernah sebut "kamu user gratis" atau "upgrade dulu" secara kasar
+- Cukup untuk membuat penasaran, tapi tidak terlalu lengkap
+- Untuk chart: sebut 1-2 hal yang terlihat, tidak detail
+- Untuk harga: sebutkan harga dan pergerakan, tanpa analisis mendalam
+- Di akhir, hint natural bahwa ada analisis lebih dalam untuk member
+- Jangan sebut "kamu user gratis" secara kasar
+${marketContext}
 
-${marketData ? `DATA REAL-TIME:\n${marketData}` : ''}
-
-Selalu ingatkan ini hanya edukasi, bukan saran investasi.`;
-
-    const memberPrompt = `Kamu adalah Moon Back AI — asisten financial market premium Indonesia yang expert dan sangat helpful.
-
-Kamu sedang melayani MOON BACK MEMBER. Berikan jawaban yang:
-- Mendalam dan komprehensif — 3-4 paragraf
-- Untuk analisis chart: analisis teknikal lengkap (support/resistance, trend, indikator, potensi arah)
-- Untuk harga: konteks makro, sentimen market, level penting, outlook jangka pendek
-- Berikan strategi dan insight konkret yang actionable
-- Gunakan bahasa expert tapi tetap mudah dipahami
-- Empati dan personal — seperti mentor yang peduli
-
-${marketData ? `DATA REAL-TIME:\n${marketData}\n\nGunakan data ini untuk analisis yang akurat dan terkini.` : ''}
-
-Kepribadian: cerdas, hangat, expert, seperti teman yang kebetulan jago trading.
-Selalu ingatkan ini edukasi, bukan saran investasi — tapi dengan cara natural.
-Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) HANYA ketika ditanya cara beli crypto untuk pemula.`;
-
-    const systemPrompt = isMember ? memberPrompt : freePrompt;
+Ingatkan ini edukasi bukan saran investasi.`;
+    }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -151,7 +157,7 @@ Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) HANYA ketika ditanya car
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: isMember ? 1024 : 512,
+        max_tokens: tier === 'premiumplus' ? 1500 : tier === 'premium' ? 1024 : 512,
         system: systemPrompt,
         messages
       })
