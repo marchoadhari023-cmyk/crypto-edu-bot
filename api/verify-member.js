@@ -1,14 +1,3 @@
-function generateMemberCode(userId) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = 'MB-';
-  const seed = userId.toString();
-  for (let i = 0; i < 6; i++) {
-    const idx = (parseInt(seed[i % seed.length]) + i * 7) % chars.length;
-    code += chars[idx];
-  }
-  return code;
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -19,13 +8,37 @@ export default async function handler(req, res) {
 
   const cleanCode = code.toUpperCase().trim();
 
-  // Validasi format kode member (MB-XXXXXX)
-  const memberPattern = /^MB-[A-Z0-9]{6}$/;
-  if (memberPattern.test(cleanCode)) {
+  // Premium+ codes (PP-XXXXXX)
+  const premiumPlusPattern = /^PP-[A-Z0-9]{6}$/;
+  if (premiumPlusPattern.test(cleanCode)) {
     return res.status(200).json({
       success: true,
-      type: 'member',
-      message: 'Kode member valid! Kamu dapat 10 pertanyaan/hari.'
+      tier: 'premiumplus',
+      message: 'Premium+ aktif! Akses penuh + exclusive signals + mentoring Marcho.'
+    });
+  }
+
+  // Premium codes (MB-XXXXXX or PR-XXXXXX)
+  const premiumPattern = /^(MB|PR)-[A-Z0-9]{6}$/;
+  if (premiumPattern.test(cleanCode)) {
+    return res.status(200).json({
+      success: true,
+      tier: 'premium',
+      message: 'Premium aktif! AI lebih banyak + kelas dasar + Discord komunitas.'
+    });
+  }
+
+  // Check against VALID_PREMIUM_CODES env
+  const VALID_CODES = process.env.VALID_PREMIUM_CODES || '';
+  const validCodesArray = VALID_CODES.split(',').map(c => c.trim()).filter(Boolean);
+  if (validCodesArray.includes(cleanCode)) {
+    const isPlus = cleanCode.startsWith('PP-') || cleanCode.startsWith('EB-');
+    return res.status(200).json({
+      success: true,
+      tier: isPlus ? 'premiumplus' : 'premium',
+      message: isPlus
+        ? 'Premium+ aktif! Akses penuh + exclusive signals + mentoring Marcho.'
+        : 'Premium aktif! AI lebih banyak + kelas dasar + Discord komunitas.'
     });
   }
 
