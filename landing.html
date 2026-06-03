@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moon Back AI — Financial Market Intelligence Indonesia</title>
+  <meta name="description" content="Asisten AI financial market terpintar Indonesia. Analisis crypto, saham, emas, forex dalam Bahasa Indonesia."/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#f0f0f0;line-height:1.6}
+    .container{max-width:1100px;margin:0 auto;padding:0 24px}
+    nav{padding:20px 0;border-bottom:1px solid #1a1a1a;position:sticky;top:0;background:#0a0a0aee;backdrop-filter:blur(10px);z-index:100}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-cta{padding:10px 24px;background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;border-radius:10px;color:#000;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+    .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px #c9a84c44}
+    .hero{padding:100px 0 80px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;border:1px solid #c9a84c33;background:#c9a84c0a;font-size:12px;color:#c9a84c;margin-bottom:24px}
+    .hero h1{font-size:56px;font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
+    .hero h1 span{background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero p{font-size:18px;color:#888;max-width:600px;margin:0 auto 40px}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn-primary{padding:14px 32px;background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;border-radius:12px;color:#000;font-weight:600;font-size:16px;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px #c9a84c44}
+    .btn-outline{padding:14px 32px;background:transparent;border:1px solid #2a2a2a;border-radius:12px;color:#888;font-size:16px;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block}
+    .btn-outline:hover{border-color:#444;color:#ccc}
+    .stats{display:flex;gap:40px;justify-content:center;padding:60px 0;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a}
+    .stat{text-align:center}
+    .stat-num{font-size:36px;font-weight:700;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat-label{font-size:13px;color:#555;margin-top:4px}
+    .features{padding:100px 0}
+    .section-label{font-size:12px;color:#c9a84c;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+    .section-title{font-size:40px;font-weight:700;letter-spacing:-0.5px;margin-bottom:16px}
+    .section-sub{font-size:16px;color:#666;max-width:500px}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+    .feature-card{background:#111;border:1px solid #1a1a1a;border-radius:16px;padding:28px;transition:all 0.2s}
+    .feature-card:hover{border-color:#2a2a2a;transform:translateY(-2px)}
+    .feature-icon{font-size:28px;margin-bottom:16px}
+    .feature-title{font-size:16px;font-weight:600;margin-bottom:8px;color:#e0e0e0}
+    .feature-desc{font-size:14px;color:#666;line-height:1.6}
+    .pricing{padding:100px 0;text-align:center}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px;text-align:left}
+    .pricing-card{background:#111;border:1px solid #1a1a1a;border-radius:20px;padding:32px;position:relative}
+    .pricing-card.featured{border-color:#c9a84c44;background:#1a1508}
+    .featured-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#f0c060);color:#000;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap}
+    .plan-name{font-size:14px;color:#666;margin-bottom:8px;font-weight:500}
+    .plan-price{font-size:36px;font-weight:700;color:#fff;margin-bottom:4px}
+    .plan-price span{font-size:14px;color:#555;font-weight:400}
+    .plan-desc{font-size:13px;color:#555;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #1a1a1a}
+    .plan-features{list-style:none;margin-bottom:28px}
+    .plan-features li{font-size:14px;color:#888;padding:6px 0;display:flex;gap:8px;align-items:flex-start}
+    .plan-features li::before{content:'✓';color:#c9a84c;font-weight:700;flex-shrink:0;margin-top:2px}
+    .plan-btn{width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;text-align:center;text-decoration:none;display:block}
+    .plan-btn-gold{background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;color:#000}
+    .plan-btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px #c9a84c33}
+    .plan-btn-outline{background:transparent;border:1px solid #222;color:#666}
+    .plan-btn-outline:hover{border-color:#333;color:#888}
+    .cta-section{padding:100px 0;text-align:center}
+    .cta-box{background:linear-gradient(135deg,#1a1508,#111);border:1px solid #c9a84c22;border-radius:24px;padding:80px 40px}
+    .cta-box h2{font-size:42px;font-weight:700;margin-bottom:16px;letter-spacing:-0.5px}
+    .cta-box p{font-size:16px;color:#666;margin-bottom:40px}
+    footer{padding:40px 0;border-top:1px solid #1a1a1a;text-align:center}
+    footer p{font-size:13px;color:#444}
+    footer a{color:#666;text-decoration:none}
+    footer a:hover{color:#c9a84c}
+    @media(max-width:768px){
+      .hero h1{font-size:36px}
+      .features-grid,.pricing-grid{grid-template-columns:1fr}
+      .stats{flex-wrap:wrap;gap:30px}
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo">Moon Back AI</div>
+      <a href="/index.html" class="nav-cta">Mulai Gratis →</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">🚀 AI Financial Market #1 Indonesia</div>
+    <h1>Asisten Investasi<br><span>Terpintar</span> Indonesia</h1>
+    <p>Analisis crypto, saham, emas, dan forex dalam Bahasa Indonesia. Didukung AI terdepan. Mulai gratis sekarang.</p>
+    <div class="hero-btns">
+      <a href="/index.html" class="btn-primary">Mulai Gratis</a>
+      <a href="https://t.me/BelajarCryptoID06" target="_blank" class="btn-outline">Join Channel Telegram</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="stats">
+      <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Coin Crypto Real-Time</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Selalu Online</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Bahasa Indonesia</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Perlu Daftar</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <div class="section-label">Fitur Unggulan</div>
+    <div class="section-title">Semua yang Kamu<br>Butuhkan</div>
+    <p class="section-sub">Dari harga real-time sampai analisis mendalam — semua dalam satu tempat.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Analisis Chart & Gambar</div><div class="feature-desc">Upload screenshot chart trading kamu dan dapatkan analisis teknikal langsung dari AI.</div></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Harga Real-Time</div><div class="feature-desc">Data harga terkini untuk 20+ coin crypto, emas, dan kurs forex langsung dari sumber terpercaya.</div></div>
+      <div class="feature-card"><div class="feature-icon">🇮🇩</div><div class="feature-title">100% Bahasa Indonesia</div><div class="feature-desc">Semua penjelasan dalam Bahasa Indonesia yang mudah dipahami, cocok untuk pemula.</div></div>
+      <div class="feature-card"><div class="feature-icon">🪙</div><div class="feature-title">Crypto & DeFi</div><div class="feature-desc">Bitcoin, Ethereum, altcoin, DeFi, NFT, staking — semua bisa ditanya dan dijawab lengkap.</div></div>
+      <div class="feature-card"><div class="feature-icon">📈</div><div class="feature-title">Saham & Reksa Dana</div><div class="feature-desc">Analisis saham IDX dan US, reksa dana, obligasi SBN — untuk investor lokal Indonesia.</div></div>
+      <div class="feature-card"><div class="feature-icon">🥇</div><div class="feature-title">Emas & Forex</div><div class="feature-desc">Harga emas terkini, analisis XAU/USD, dan kurs forex semua pasangan utama.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing">
+  <div class="container">
+    <div class="section-label" style="text-align:center">Harga</div>
+    <div class="section-title" style="text-align:center">Mulai Gratis,<br>Upgrade Kapan Saja</div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price">Rp 0<span>/bulan</span></div>
+        <div class="plan-desc">Untuk yang baru mau mulai belajar</div>
+        <ul class="plan-features">
+          <li>Akses terbatas</li>
+          <li>Semua topik financial</li>
+          <li>Harga crypto real-time</li>
+          <li>Harga emas & forex</li>
+          <li>Bahasa Indonesia</li>
+        </ul>
+        <a href="/index.html" class="plan-btn plan-btn-outline">Mulai Gratis</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-badge">⭐ Recommended</div>
+        <div class="plan-name">Member</div>
+        <div class="plan-price">Rp 0<span>/bulan</span></div>
+        <div class="plan-desc">Join channel Telegram gratis, dapat akses lebih banyak</div>
+        <ul class="plan-features">
+          <li>Akses lebih banyak dari gratis</li>
+          <li>Analisis chart & upload gambar</li>
+          <li>Semua topik financial</li>
+          <li>Harga real-time semua aset</li>
+          <li>Akses komunitas Telegram</li>
+          <li>Update market harian</li>
+          <li>Diskusi dengan sesama investor</li>
+          <li>Tips & strategi eksklusif</li>
+        </ul>
+        <a href="https://t.me/BelajarCryptoID06" target="_blank" class="plan-btn plan-btn-gold">Join Channel Gratis</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">Rp 75rb<span>/bulan</span></div>
+        <div class="plan-desc">Early Bird — harga spesial selamanya untuk 10 orang pertama</div>
+        <ul class="plan-features">
+          <li>Akses lebih banyak dari member</li>
+          <li>Semua fitur Member</li>
+          <li>Prioritas response</li>
+          <li>Early Bird price forever</li>
+        </ul>
+        <a href="/index.html" class="plan-btn plan-btn-gold">Upgrade Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Siap Mulai Investasi<br>Lebih Cerdas?</h2>
+      <p>Gratis, tanpa daftar, langsung bisa dipakai sekarang.</p>
+      <a href="/index.html" class="btn-primary">Mulai Gratis Sekarang →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Moon Back AI · <a href="/index.html">Buka Chatbot</a> · <a href="https://t.me/BelajarCryptoID06" target="_blank">Telegram</a> · Untuk edukasi saja, bukan saran investasi</p>
+  </div>
+</footer>
+</body>
+</html>
