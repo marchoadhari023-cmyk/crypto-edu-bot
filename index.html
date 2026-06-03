@@ -21,9 +21,9 @@
     #member-btn.hide{display:none}
     #upgrade-btn{border-color:#c9a84c33;color:#c9a84c}
     #upgrade-btn:hover{background:#c9a84c22}
-    #upgrade-btn.premium{color:#22c55e;border-color:#22c55e33;pointer-events:none}
+    #upgrade-btn.active{color:#22c55e;border-color:#22c55e33;pointer-events:none}
     #msg-area{flex:1;position:relative;overflow:hidden}
-    #watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);font-size:60px;font-weight:700;color:#fff;opacity:0.015;letter-spacing:4px;pointer-events:none;user-select:none;white-space:nowrap;text-align:center;line-height:1.4}
+    #watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);font-size:55px;font-weight:700;color:#fff;opacity:0.015;letter-spacing:4px;pointer-events:none;user-select:none;white-space:nowrap;text-align:center;line-height:1.4}
     #msgs{height:100%;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}
     #msgs::-webkit-scrollbar{width:4px}
     #msgs::-webkit-scrollbar-thumb{background:#222;border-radius:4px}
@@ -37,7 +37,7 @@
     .bubble.typing{color:#555;background:#1a1a1a;border:1px solid #222}
     .bubble.limit{background:#1a1508;border:1px solid #c9a84c22;color:#d0b880;border-radius:16px;padding:16px 20px}
     .bubble.limit a{color:#c9a84c;text-decoration:none;font-weight:500}
-    .bubble.cooldown{background:#111;border:1px solid #2a2a2a;color:#666;border-radius:16px;padding:14px 18px;font-size:13px}
+    .bubble.cooldown{background:#111;border:1px solid #2a2a2a;color:#888;border-radius:16px;padding:14px 18px;font-size:13px}
     .typing-dots{display:flex;gap:4px;padding:4px 0}
     .typing-dots span{width:6px;height:6px;border-radius:50%;background:#555;animation:bounce 1.4s infinite}
     .typing-dots span:nth-child(2){animation-delay:0.2s}
@@ -64,39 +64,44 @@
     #file-input{display:none}
     #modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
     #modal-overlay.show{display:flex}
-    #modal{background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:28px;width:92%;max-width:420px;animation:fadeUp 0.3s ease;max-height:90vh;overflow-y:auto}
+    #modal{background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:28px;width:92%;max-width:460px;animation:fadeUp 0.3s ease;max-height:90vh;overflow-y:auto}
     #modal h3{font-size:18px;font-weight:600;color:#fff;margin-bottom:6px}
     .sub{font-size:13px;color:#666;margin-bottom:20px;line-height:1.5}
+    .modal-tabs{display:flex;gap:8px;margin-bottom:20px}
+    .tab-btn{flex:1;padding:10px;border-radius:10px;border:1px solid #222;background:#1a1a1a;color:#666;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+    .tab-btn.active{border-color:#c9a84c44;background:#c9a84c11;color:#c9a84c}
+    .tab-content{display:none}
+    .tab-content.show{display:block}
     .price-card{background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:16px}
-    .eb-badge{font-size:11px;background:#c9a84c22;color:#c9a84c;border:1px solid #c9a84c33;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
-    .price-old{font-size:12px;color:#444;text-decoration:line-through}
-    .price-new{font-size:24px;font-weight:700;color:#c9a84c}
-    .price-note{font-size:11px;color:#555;margin-top:4px}
+    .price-card.featured{border-color:#c9a84c44;background:#1a1508}
+    .eb-badge{font-size:11px;background:#c9a84c22;color:#c9a84c;border:1px solid #c9a84c33;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+    .plan-name{font-size:12px;color:#666;margin-bottom:4px}
+    .plan-price{font-size:22px;font-weight:700;color:#c9a84c;margin-bottom:4px}
+    .plan-price span{font-size:13px;color:#555;font-weight:400}
+    .plan-features{list-style:none;margin:10px 0}
+    .plan-features li{font-size:12px;color:#888;padding:3px 0;display:flex;gap:6px}
+    .plan-features li::before{content:'✓';color:#c9a84c;font-weight:700;flex-shrink:0}
     .steps{margin-bottom:16px}
     .step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
-    .step-n{width:22px;height:22px;border-radius:50%;background:#c9a84c22;border:1px solid #c9a84c44;color:#c9a84c;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-    .step-t{font-size:13px;color:#888;line-height:1.5}
+    .step-n{width:20px;height:20px;border-radius:50%;background:#c9a84c22;border:1px solid #c9a84c44;color:#c9a84c;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .step-t{font-size:12px;color:#888;line-height:1.5}
     .step-t strong{color:#bbb}
-    .code-input{width:100%;padding:12px 16px;border-radius:12px;border:1px solid #222;background:#1a1a1a;color:#e0e0e0;font-size:14px;outline:none;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;margin-bottom:8px;transition:border-color 0.2s}
+    .code-input{width:100%;padding:11px 14px;border-radius:12px;border:1px solid #222;background:#1a1a1a;color:#e0e0e0;font-size:14px;outline:none;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;margin-bottom:8px;transition:border-color 0.2s}
     .code-input:focus{border-color:#c9a84c44}
     .code-msg{font-size:12px;margin-bottom:12px;min-height:16px}
     .code-msg.ok{color:#22c55e}
     .code-msg.err{color:#ef4444}
-    .modal-btn{width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:8px;font-family:'Inter',sans-serif}
+    .modal-btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:8px;font-family:'Inter',sans-serif}
     .btn-gold{background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;color:#000}
     .btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px #c9a84c33}
+    .btn-purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;color:#fff}
+    .btn-purple:hover{transform:translateY(-1px)}
     .btn-blue{background:linear-gradient(135deg,#3b82f6,#60a5fa);border:none;color:#fff}
     .btn-blue:hover{transform:translateY(-1px)}
     .btn-ghost{background:transparent;border:1px solid #222;color:#555}
     .btn-ghost:hover{border-color:#333;color:#777}
-    #eb-slots{background:#c9a84c0a;border:1px solid #c9a84c22;border-radius:10px;padding:10px 14px;font-size:12px;color:#888;text-align:center;margin-bottom:16px}
-    #eb-slots span{color:#c9a84c;font-weight:600}
-    .modal-tabs{display:flex;gap:8px;margin-bottom:20px}
-    .tab-btn{flex:1;padding:10px;border-radius:10px;border:1px solid #222;background:#1a1a1a;color:#666;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
-    .tab-btn.active{border-color:#c9a84c44;background:#c9a84c11;color:#c9a84c}
-    .tab-content{display:none}
-    .tab-content.show{display:block}
     .img-bubble{max-width:200px;border-radius:12px;border:1px solid #2a2a2a;margin-bottom:6px;display:block}
+    .divider{border:none;border-top:1px solid #1a1a1a;margin:16px 0}
   </style>
 </head>
 <body>
@@ -110,8 +115,8 @@
     <div id="header-right">
       <div id="online-dot"></div>
       <span id="online-txt">Online</span>
-      <button id="member-btn" class="hdr-btn" onclick="showMemberModal()">🎫 Kode Member</button>
-      <button id="upgrade-btn" class="hdr-btn" onclick="showPremiumModal()">🌙 Jadi Member</button>
+      <button id="member-btn" class="hdr-btn" onclick="showModal('member')">🎫 Kode Akses</button>
+      <button id="upgrade-btn" class="hdr-btn" onclick="showModal('premium')">🌙 Jadi Member</button>
     </div>
   </div>
 
@@ -123,7 +128,7 @@
           <span class="ai-label">Moon Back AI</span>
           <div class="bubble ai">Halo! 👋 Aku <strong>Moon Back AI</strong> — asisten financial market kamu.<br><br>
           Tanya soal crypto, saham, emas, forex, atau upload chart untuk dianalisis! 📊<br><br>
-          Mau akses lebih banyak + kelas + komunitas? <a href="#" onclick="showPremiumModal();return false" style="color:#c9a84c">Jadi Moon Back Member →</a></div>
+          Mau akses lebih banyak + kelas + komunitas Discord? <a href="javascript:void(0)" onclick="showModal('premium')" style="color:#c9a84c">Jadi Moon Back Member →</a></div>
         </div>
       </div>
     </div>
@@ -159,41 +164,79 @@
 <div id="modal-overlay">
   <div id="modal">
     <div class="modal-tabs">
-      <button class="tab-btn active" id="tab-member" onclick="switchTab('member')">🎫 Kode Member</button>
-      <button class="tab-btn" id="tab-premium" onclick="switchTab('premium')">⚡ Premium</button>
+      <button class="tab-btn" id="tab-member" onclick="switchTab('member')">🎫 Kode Akses</button>
+      <button class="tab-btn" id="tab-premium" onclick="switchTab('premium')">🌙 Premium</button>
+      <button class="tab-btn" id="tab-premiumplus" onclick="switchTab('premiumplus')">⚡ Premium+</button>
     </div>
-    <div class="tab-content show" id="content-member">
-      <h3>🎫 Aktivasi Kode Member</h3>
-      <p class="sub">Masukkan kode yang dikirim bot Telegram ke DM kamu setelah join grup.</p>
+
+    <!-- Tab Kode Akses -->
+    <div class="tab-content" id="content-member">
+      <h3>🎫 Aktivasi Kode Akses</h3>
+      <p class="sub">Masukkan kode aktivasi yang kamu dapat setelah mendaftar sebagai Moon Back Member.</p>
       <input class="code-input" id="member-code-inp" type="text" placeholder="CONTOH: MB-ABC123" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
       <div class="code-msg" id="member-code-msg"></div>
-      <button class="modal-btn btn-blue" onclick="activateMember()">✓ Aktifkan Kode Member</button>
-      <button class="modal-btn btn-ghost" onclick="closeModal()">Nanti saja</button>
-      <div style="margin-top:12px;padding:12px;background:#1a1a1a;border-radius:10px;font-size:12px;color:#666;line-height:1.6">
-        Belum punya kode? Join grup dulu:<br>
-        <a href="https://t.me/BelajarCryptoID06" target="_blank" style="color:#60a5fa">t.me/BelajarCryptoID06</a><br>
-        Lalu start bot: <strong style="color:#bbb">@belajarcryptoid_bot</strong>
-      </div>
+      <button class="modal-btn btn-blue" onclick="activateMember()">✓ Aktifkan Kode</button>
+      <hr class="divider">
+      <p style="font-size:12px;color:#555;text-align:center">Belum punya kode? Pilih paket di tab Premium atau Premium+</p>
+      <button class="modal-btn btn-ghost" onclick="closeModal()">Tutup</button>
     </div>
+
+    <!-- Tab Premium -->
     <div class="tab-content" id="content-premium">
-      <h3>🌙 Moon Back Member</h3>
-      <p class="sub">AI lebih banyak + Kelas + Komunitas Discord. Semua dalam satu paket.</p>
-      <div id="eb-slots">🔥 Early Bird: <span id="eb-num">10</span> slot tersisa · Harga spesial selamanya!</div>
+      <h3>🌙 Moon Back Premium</h3>
+      <p class="sub">Akses lebih banyak + komunitas Discord + kelas modul dasar.</p>
       <div class="price-card">
-        <div class="eb-badge">Early Bird Special</div>
-        <div class="price-old">Rp 125.000/bulan</div>
-        <div class="price-new">Rp 100.000<span style="font-size:14px;color:#888;font-weight:400">/bulan</span></div>
-        <div class="price-note">Termasuk AI + Kelas Notion + Discord komunitas</div>
+        <div class="eb-badge">🔥 Early Bird</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">Rp 50.000<span>/bulan</span></div>
+        <ul class="plan-features">
+          <li>AI sesi 5 jam aktif, istirahat 1.5 jam</li>
+          <li>Upload & analisis chart mendalam</li>
+          <li>Discord: Market Intelligence, Chart Lab</li>
+          <li>Discord: Portfolio Clinic</li>
+          <li>Discord: Daily Market Pulse & Weekly Deep Dive</li>
+          <li>Kelas modul dasar crypto & trading</li>
+          <li>Classic News harian</li>
+        </ul>
       </div>
       <div class="steps">
         <div class="step"><div class="step-n">1</div><div class="step-t">Transfer ke GoPay/OVO/Dana: <strong>081299950286</strong> (Marcho Adhari)</div></div>
-        <div class="step"><div class="step-n">2</div><div class="step-t">Kirim bukti ke Telegram: <strong>@marchoadhari023</strong></div></div>
-        <div class="step"><div class="step-n">3</div><div class="step-t">Dapatkan kode akses dari kami</div></div>
-        <div class="step"><div class="step-n">4</div><div class="step-t">Input kode di bawah → Premium aktif!</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Kirim bukti + username Discord ke: <strong>@marchoadhari023</strong></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t">Dapat kode aktivasi + role Discord dalam 1x24 jam</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-t">Input kode di tab "Kode Akses" → aktif!</div></div>
       </div>
-      <input class="code-input" id="premium-code-inp" type="text" placeholder="MASUKKAN KODE PREMIUM" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
-      <div class="code-msg" id="premium-code-msg"></div>
-      <button class="modal-btn btn-gold" onclick="activatePremium()">✓ Aktifkan Premium</button>
+      <a href="https://discord.gg/xMtR4zagJ" target="_blank" class="modal-btn btn-gold" style="display:block;text-align:center;text-decoration:none;padding:12px">👀 Lihat Discord Dulu</a>
+      <button class="modal-btn btn-ghost" onclick="closeModal()">Nanti saja</button>
+    </div>
+
+    <!-- Tab Premium+ -->
+    <div class="tab-content" id="content-premiumplus">
+      <h3>⚡ Moon Back Premium+</h3>
+      <p class="sub">Akses penuh + exclusive signals + mentoring langsung dari Marcho.</p>
+      <div class="price-card featured">
+        <div class="eb-badge">🔥 Early Bird · 10 slot</div>
+        <div class="plan-name">Premium+</div>
+        <div class="plan-price">Rp 100.000<span>/bulan</span></div>
+        <ul class="plan-features">
+          <li>Semua yang ada di Premium</li>
+          <li>Alpha Strategy — setup trading Marcho</li>
+          <li>Exclusive Signals real-time</li>
+          <li>Early Warning System</li>
+          <li>Weekly Personal Watchlist Marcho</li>
+          <li>Ask Marcho Directly — dijawab 24 jam</li>
+          <li>Live Voice Session bulanan</li>
+          <li>Portfolio review personal</li>
+          <li>Kelas dasar → pro level</li>
+          <li>Premium+ Lounge eksklusif</li>
+        </ul>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-t">Transfer ke GoPay/OVO/Dana: <strong>081299950286</strong> (Marcho Adhari)</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Kirim bukti + username Discord ke: <strong>@marchoadhari023</strong></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t">Dapat kode aktivasi + role Discord dalam 1x24 jam</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-t">Input kode di tab "Kode Akses" → aktif!</div></div>
+      </div>
+      <a href="https://discord.gg/xMtR4zagJ" target="_blank" class="modal-btn btn-purple" style="display:block;text-align:center;text-decoration:none;padding:12px">👀 Lihat Discord Dulu</a>
       <button class="modal-btn btn-ghost" onclick="closeModal()">Nanti saja</button>
     </div>
   </div>
@@ -206,94 +249,72 @@ const sendBtn=document.getElementById('send-btn');
 const history=[];
 let pendingImage=null;
 
-// Storage keys
-const STORAGE_KEY='moonback_usage';
-const PREMIUM_KEY='moonback_premium';
-const EB_KEY='moonback_eb_count';
-const COOLDOWN_KEY='moonback_cooldown';
-const CHANNEL='https://t.me/BelajarCryptoID06';
-const TOTAL_EB=10;
-
-// Limits (hidden from user)
 const FREE_LIMIT=10;
-const MEMBER_LIMIT=999999; // member pakai sistem sesi
-const PREMIUM_SESSION_MS=5*60*60*1000; // sesi aktif 5 jam
-const PREMIUM_COOLDOWN_MS=1.5*60*60*1000; // istirahat 1.5 jam
+const STORAGE_KEY='moonback_usage';
+const MEMBER_KEY='moonback_member';
+const COOLDOWN_KEY='moonback_cooldown';
+const DISCORD='https://discord.gg/xMtR4zagJ';
+
+const SESSION_MS=5*60*60*1000;
+const COOLDOWN_MS=1.5*60*60*1000;
 
 function getToday(){return new Date().toISOString().split('T')[0];}
-
 function getUsage(){
   try{
     const r=localStorage.getItem(STORAGE_KEY);
-    if(!r)return{date:getToday(),count:0,isMember:false};
+    if(!r)return{date:getToday(),count:0};
     const d=JSON.parse(r);
-    if(d.date!==getToday())return{date:getToday(),count:0,isMember:d.isMember||false};
+    if(d.date!==getToday())return{date:getToday(),count:0};
     return d;
-  }catch{return{date:getToday(),count:0,isMember:false};}
+  }catch{return{date:getToday(),count:0};}
 }
 function saveUsage(d){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch{}}
-function getPremium(){try{return JSON.parse(localStorage.getItem(PREMIUM_KEY)||'null');}catch{return null;}}
-function isPremium(){return getPremium()!==null;}
-function getEBUsed(){try{return parseInt(localStorage.getItem(EB_KEY)||'0');}catch{return 0;}}
+function getMember(){try{return JSON.parse(localStorage.getItem(MEMBER_KEY)||'null');}catch{return null;}}
+function isMember(){return getMember()!==null;}
+function getMemberTier(){const m=getMember();return m?m.tier:'free';}
 
-// Premium cooldown system
-function getPremiumUsage(){
+function getSession(){
   try{return JSON.parse(localStorage.getItem(COOLDOWN_KEY)||'{"sessionStart":0,"inCooldown":false,"cooldownStart":0}');}
   catch{return{sessionStart:0,inCooldown:false,cooldownStart:0};}
 }
-function savePremiumUsage(d){try{localStorage.setItem(COOLDOWN_KEY,JSON.stringify(d));}catch{}}
+function saveSession(d){try{localStorage.setItem(COOLDOWN_KEY,JSON.stringify(d));}catch{}}
 
-function canPremiumAsk(){
-  const pu=getPremiumUsage();
+function canAsk(){
   const now=Date.now();
-
-  // Sedang dalam cooldown
-  if(pu.inCooldown){
-    const cooldownEnd=pu.cooldownStart+PREMIUM_COOLDOWN_MS;
-    if(now<cooldownEnd){
-      const minsLeft=Math.ceil((cooldownEnd-now)/60000);
-      const hoursLeft=Math.floor(minsLeft/60);
-      const minsRem=minsLeft%60;
-      const timeStr=hoursLeft>0?`${hoursLeft} jam ${minsRem} menit`:`${minsLeft} menit`;
-      return{can:false,timeStr};
+  const s=getSession();
+  if(s.inCooldown){
+    const end=s.cooldownStart+COOLDOWN_MS;
+    if(now<end){
+      const mins=Math.ceil((end-now)/60000);
+      const h=Math.floor(mins/60),m=mins%60;
+      return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`};
     }
-    // Cooldown selesai, mulai sesi baru
-    savePremiumUsage({sessionStart:now,inCooldown:false,cooldownStart:0});
+    saveSession({sessionStart:now,inCooldown:false,cooldownStart:0});
     return{can:true};
   }
-
-  // Belum ada sesi atau sesi pertama
-  if(pu.sessionStart===0){
-    savePremiumUsage({sessionStart:now,inCooldown:false,cooldownStart:0});
+  if(s.sessionStart===0){
+    saveSession({sessionStart:now,inCooldown:false,cooldownStart:0});
     return{can:true};
   }
-
-  // Cek apakah sesi 5 jam sudah habis
-  const sessionEnd=pu.sessionStart+PREMIUM_SESSION_MS;
-  if(now>=sessionEnd){
-    // Sesi habis, mulai cooldown
-    savePremiumUsage({sessionStart:pu.sessionStart,inCooldown:true,cooldownStart:now});
-    return{can:false,timeStr:'1 jam 30 menit'};
+  if(now>=s.sessionStart+SESSION_MS){
+    saveSession({sessionStart:s.sessionStart,inCooldown:true,cooldownStart:now});
+    return{can:false,time:'1 jam 30 menit'};
   }
-
-  // Masih dalam sesi aktif
   return{can:true};
 }
 
 function updateUI(){
+  const tier=getMemberTier();
   const upgradeBtn=document.getElementById('upgrade-btn');
   const memberBtn=document.getElementById('member-btn');
-  if(isPremium()){
-    upgradeBtn.textContent='⚡ Premium';
-    upgradeBtn.className='hdr-btn premium';
-    memberBtn.className='hdr-btn hide';
-  }else if(getUsage().isMember){
-    memberBtn.className='hdr-btn hide';
+  if(tier==='premium'){
+    upgradeBtn.textContent='🌙 Premium Aktif';
+    upgradeBtn.className='hdr-btn active';
+  }else if(tier==='premiumplus'){
+    upgradeBtn.textContent='⚡ Premium+ Aktif';
+    upgradeBtn.className='hdr-btn active';
   }
-}
-
-function getEBCount(){
-  return Math.max(0,TOTAL_EB-getEBUsed());
+  if(isMember()) memberBtn.className='hdr-btn hide';
 }
 
 function switchTab(tab){
@@ -302,19 +323,15 @@ function switchTab(tab){
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('content-'+tab).classList.add('show');
 }
-function showMemberModal(){document.getElementById('modal-overlay').classList.add('show');switchTab('member');}
-function showPremiumModal(){
-  document.getElementById('eb-num').textContent=getEBCount();
-  if(getEBCount()<=0)document.getElementById('eb-slots').style.display='none';
+
+function showModal(tab){
   document.getElementById('modal-overlay').classList.add('show');
-  switchTab('premium');
+  switchTab(tab||'member');
 }
 function closeModal(){
   document.getElementById('modal-overlay').classList.remove('show');
-  ['member-code-msg','premium-code-msg'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.textContent='';el.className='code-msg';}
-  });
+  const msgEl=document.getElementById('member-code-msg');
+  if(msgEl){msgEl.textContent='';msgEl.className='code-msg';}
 }
 
 async function activateMember(){
@@ -326,35 +343,14 @@ async function activateMember(){
     const r=await fetch('/api/verify-member',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
     const d=await r.json();
     if(d.success){
-      const usage=getUsage();usage.isMember=true;saveUsage(usage);
+      localStorage.setItem(MEMBER_KEY,JSON.stringify({code,tier:d.tier||'premium',at:new Date().toISOString()}));
       msgEl.textContent='✓ '+d.message;msgEl.className='code-msg ok';
       setTimeout(()=>{
         closeModal();updateUI();
         inpEl.disabled=false;sendBtn.disabled=false;
         document.querySelectorAll('.chip').forEach(c=>c.disabled=false);
-        addMsg('ai','Yeay! Kode member valid 🎉 Sekarang kamu punya akses lebih banyak. Mau tanya apa dulu?');
-      },1200);
-    }else{msgEl.textContent='✗ '+d.message;msgEl.className='code-msg err';}
-  }catch{msgEl.textContent='Koneksi bermasalah.';msgEl.className='code-msg err';}
-}
-
-async function activatePremium(){
-  const code=document.getElementById('premium-code-inp').value.trim().toUpperCase();
-  const msgEl=document.getElementById('premium-code-msg');
-  if(!code){msgEl.textContent='Masukkan kode dulu ya.';msgEl.className='code-msg err';return;}
-  msgEl.textContent='Verifikasi...';msgEl.className='code-msg';
-  try{
-    const r=await fetch('/api/verify-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
-    const d=await r.json();
-    if(d.success){
-      localStorage.setItem(PREMIUM_KEY,JSON.stringify({code,type:d.type,at:new Date().toISOString()}));
-      if(d.type==='earlybird')localStorage.setItem(EB_KEY,(getEBUsed()+1).toString());
-      msgEl.textContent='✓ '+d.message;msgEl.className='code-msg ok';
-      setTimeout(()=>{
-        closeModal();updateUI();
-        inpEl.disabled=false;sendBtn.disabled=false;
-        document.querySelectorAll('.chip').forEach(c=>c.disabled=false);
-        addMsg('ai','Selamat! Premium aktif ⚡ Akses penuh ke Moon Back AI. Mau mulai dari mana?');
+        const tierLabel=d.tier==='premiumplus'?'Premium+':'Premium';
+        addMsg('ai',`Selamat! ${tierLabel} kamu sudah aktif 🎉 Akses AI lebih banyak + komunitas Discord sudah terbuka. Mau mulai dari mana?`);
       },1200);
     }else{msgEl.textContent='✗ '+d.message;msgEl.className='code-msg err';}
   }catch{msgEl.textContent='Koneksi bermasalah.';msgEl.className='code-msg err';}
@@ -394,9 +390,10 @@ function addMsg(role,text,typing,limitType){
     }else if(limitType==='free'){
       b.className='bubble limit';
       b.innerHTML=`Kamu sudah mencapai batas akses gratis hari ini. 🌙<br><br>
-      <strong>Mau akses lebih banyak?</strong><br><br>
-      🌙 <a href="#" onclick="showPremiumModal();return false">Jadi Moon Back Member</a> — AI lebih banyak + Kelas + Discord<br>
-      <span style="font-size:12px;color:#888">Rp 100.000/bulan · Early Bird Rp 100.000</span>`;
+      <strong>Upgrade untuk akses lebih banyak:</strong><br><br>
+      🌙 <a href="javascript:void(0)" onclick="showModal('premium')">Premium Rp 50rb</a> — AI lebih banyak + kelas dasar + Discord<br>
+      ⚡ <a href="javascript:void(0)" onclick="showModal('premiumplus')">Premium+ Rp 100rb</a> — Semua + exclusive signals + mentoring<br><br>
+      <a href="${DISCORD}" target="_blank" style="font-size:12px;color:#888">👀 Lihat Discord dulu →</a>`;
     }else if(limitType==='cooldown'){
       b.className='bubble cooldown';
       b.innerHTML=text;
@@ -409,7 +406,7 @@ function addMsg(role,text,typing,limitType){
     const b=document.createElement('div');
     b.className='bubble user';
     if(pendingImage&&!text){b.textContent='[Gambar dikirim]';}
-    else{b.textContent=text;}
+    else{b.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
     w.appendChild(b);
   }
   msgsEl.appendChild(w);msgsEl.scrollTop=msgsEl.scrollHeight;
@@ -425,31 +422,27 @@ async function sendMsg(){
   const hasImage=pendingImage!==null;
   if(!t&&!hasImage)return;
 
-  // Cek limit berdasarkan tipe user
-  const usage=getUsage();
-  if(isPremium()||usage.isMember){
-    // Member & Premium: sistem sesi 5 jam
-    const check=canPremiumAsk();
-    if(!check.can){
-      addMsg('ai',`Sesi kamu sedang istirahat, lanjut dalam <strong>${check.timeStr}</strong> ya. 🌙<br><br>Sambil nunggu, yuk diskusi di komunitas Discord kita!`,'','cooldown');
-      inpEl.value='';
-      return;
-    }
-  }else{
-    // Free: limit 10/hari
+  const tier=getMemberTier();
+
+  if(tier==='free'){
+    const usage=getUsage();
     if(usage.count>=FREE_LIMIT){
       addMsg('ai','','','free');
-      inpEl.value='';
-      return;
+      inpEl.value='';return;
     }
     usage.count+=1;saveUsage(usage);
+  }else{
+    const check=canAsk();
+    if(!check.can){
+      addMsg('ai',`Sesi kamu sedang istirahat, lanjut dalam <strong>${check.time}</strong> ya. 🌙<br><br>Sambil nunggu, yuk diskusi di <a href="${DISCORD}" target="_blank" style="color:#c9a84c">Discord komunitas</a>!`,'','cooldown');
+      inpEl.value='';return;
+    }
   }
 
   const userText=t||'Tolong analisis gambar ini';
   inpEl.value='';inpEl.style.height='auto';
   sendBtn.disabled=true;
 
-  // Tampilkan pesan user
   const w=document.createElement('div');
   w.className='msg user';
   const b=document.createElement('div');
@@ -475,7 +468,12 @@ async function sendMsg(){
 
   const lb=addMsg('ai','',true);
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,isMember:isPremium()||getUsage().isMember})});
+    const currentTier=getMemberTier();
+    const r=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history,isMember:currentTier!=='free',tier:currentTier})
+    });
     const d=await r.json();
     const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
     lb.className='bubble ai';
