@@ -126,8 +126,13 @@
     .btn-ghost{background:transparent;border:1px solid #222;color:#555}
     .btn-ghost:hover{border-color:#333;color:#666}
     #sync-indicator{font-size:11px;color:#333;text-align:right;padding:0 15%;margin-bottom:4px;height:14px}
+    #menu-btn{display:none;width:32px;height:32px;border-radius:8px;border:1px solid #1e1e1e;background:transparent;color:#666;cursor:pointer;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:50}
     @media(max-width:768px){
-      #sidebar{display:none}
+      #sidebar{display:none;position:fixed;left:0;top:0;bottom:0;z-index:60;width:280px;box-shadow:4px 0 20px rgba(0,0,0,0.5)}
+      #sidebar.mobile-open{display:flex!important}
+      #sidebar-overlay.show{display:block}
+      #menu-btn{display:flex}
       #msgs{padding:16px}
       #input-area{padding:12px 16px}
       #sync-indicator{padding:0 16px}
@@ -162,6 +167,7 @@
 </div>
 
 <!-- APP -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div id="app">
   <div id="sidebar">
     <div id="sidebar-header">
@@ -184,6 +190,7 @@
 
   <div id="main">
     <div id="chat-header">
+      <button id="menu-btn" onclick="toggleSidebar()">☰</button>
       <span id="chat-title">Percakapan Baru</span>
       <div>
         <button class="header-action-btn" onclick="showCodeModal()" id="upgrade-btn">🔑 Kode Akses</button>
@@ -617,6 +624,17 @@ async function sendMsg(){
   }catch{lb.className='bubble ai';lb.textContent='Koneksi bermasalah. Coba lagi!';}
   sendBtn.disabled=false;inpEl.focus();
   msgsEl.scrollTop=msgsEl.scrollHeight;
+}
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sidebar-overlay');
+  sb.classList.toggle('mobile-open');
+  ov.classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
 }
 
 checkDiscordCallback();
