@@ -8,8 +8,6 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#f0f0f0;height:100vh;overflow:hidden}
-
-    /* ===== LANDING ===== */
     #landing{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a0a;z-index:100;padding:20px}
     #landing.hide{display:none}
     .land-wrap{width:100%;max-width:420px;text-align:center}
@@ -18,7 +16,7 @@
     .land-card{background:#111;border:1px solid #1e1e1e;border-radius:20px;padding:28px;margin-bottom:12px}
     .land-card h2{font-size:17px;font-weight:600;margin-bottom:8px}
     .land-card p{font-size:13px;color:#555;margin-bottom:24px;line-height:1.6}
-    .discord-btn{width:100%;padding:14px;border-radius:12px;background:#5865F2;border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:all 0.2s}
+    .discord-btn{width:100%;padding:14px;border-radius:12px;background:#5865F2;border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:all 0.2s;font-family:'Inter',sans-serif}
     .discord-btn:hover{background:#4752c4;transform:translateY(-1px)}
     .discord-btn svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
     .divider{display:flex;align-items:center;gap:10px;margin:14px 0}
@@ -30,121 +28,109 @@
     .tier-item{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:10px 12px;text-align:left;font-size:11px}
     .tier-item strong{display:block;color:#e0e0e0;margin-bottom:2px;font-size:12px}
     .tier-item span{color:#555}
-
-    /* ===== APP LAYOUT ===== */
     #app{display:none;height:100vh;flex-direction:row}
     #app.show{display:flex}
-
-    /* ===== SIDEBAR ===== */
     #sidebar{width:260px;background:#0d0d0d;border-right:1px solid #1a1a1a;display:flex;flex-direction:column;flex-shrink:0}
     #sidebar-header{padding:16px;border-bottom:1px solid #1a1a1a}
     #sidebar-logo{font-size:15px;font-weight:700;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
     #new-chat-btn{width:100%;padding:10px;border-radius:10px;background:#1a1a1a;border:1px solid #222;color:#e0e0e0;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;font-family:'Inter',sans-serif}
-    #new-chat-btn:hover{background:#222;border-color:#333}
+    #new-chat-btn:hover{background:#222}
     #conv-list{flex:1;overflow-y:auto;padding:8px}
     #conv-list::-webkit-scrollbar{width:3px}
     #conv-list::-webkit-scrollbar-thumb{background:#1a1a1a;border-radius:3px}
-    .conv-item{padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;border:1px solid transparent}
+    .conv-item{padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;border:1px solid transparent;position:relative}
     .conv-item:hover{background:#1a1a1a}
     .conv-item.active{background:#1a1508;border-color:#c9a84c22}
-    .conv-title{font-size:13px;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .conv-title-text{font-size:13px;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+    .conv-title-input{font-size:13px;color:#e0e0e0;background:#2a2a2a;border:1px solid #c9a84c44;border-radius:6px;padding:2px 8px;outline:none;width:100%;font-family:'Inter',sans-serif}
     .conv-date{font-size:11px;color:#444;margin-top:2px}
-    .conv-item-wrap{display:flex;align-items:center;gap:6px}
-    .conv-del{font-size:11px;color:#333;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:0;transition:all 0.15s;background:none;border:none;flex-shrink:0}
-    .conv-item:hover .conv-del{opacity:1;color:#555}
-    .conv-del:hover{color:#ef4444!important}
+    .conv-actions{display:flex;gap:4px;opacity:0;transition:all 0.15s}
+    .conv-item:hover .conv-actions{opacity:1}
+    .conv-act-btn{font-size:10px;color:#444;cursor:pointer;padding:2px 5px;border-radius:4px;background:none;border:none;transition:all 0.15s}
+    .conv-act-btn:hover{color:#888;background:#2a2a2a}
+    .conv-act-btn.del:hover{color:#ef4444}
+    .conv-row{display:flex;align-items:center;gap:4px}
     #sidebar-footer{padding:12px 16px;border-top:1px solid #1a1a1a}
-    #user-card{display:flex;align-items:center;gap:10px}
-    #sidebar-avatar{width:32px;height:32px;border-radius:50%;border:1px solid #2a2a2a;flex-shrink:0}
-    #sidebar-username{font-size:13px;color:#ccc;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    #sidebar-tier{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0}
+    #user-card{display:flex;align-items:center;gap:8px}
+    #sidebar-avatar{width:30px;height:30px;border-radius:50%;border:1px solid #2a2a2a;flex-shrink:0}
+    #sidebar-username{font-size:12px;color:#ccc;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #sidebar-tier{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;flex-shrink:0}
     .badge-free{background:#1a1a1a;color:#555;border:1px solid #222}
     .badge-classic{background:#0a1a0a;color:#4ade80;border:1px solid #22c55e33}
     .badge-premium{background:#1a1508;color:#c9a84c;border:1px solid #c9a84c33}
     .badge-premiumplus{background:#1a0a2a;color:#a78bfa;border:1px solid #7c3aed33}
     .badge-admin{background:#1a1200;color:#f0c060;border:1px solid #c9a84c44}
-    #logout-btn{font-size:11px;color:#333;cursor:pointer;background:none;border:none;padding:4px;border-radius:6px;flex-shrink:0}
-    #logout-btn:hover{color:#555}
-
-    /* ===== MAIN CHAT ===== */
-    #main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+    #logout-btn{font-size:11px;color:#333;cursor:pointer;background:none;border:none;padding:4px;flex-shrink:0}
+    #logout-btn:hover{color:#666}
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
     #chat-header{padding:14px 20px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-    #chat-title{font-size:14px;color:#888;font-weight:400}
-    #header-actions{display:flex;gap:8px}
-    .header-action-btn{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid #222;background:transparent;color:#666;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
-    .header-action-btn:hover{border-color:#333;color:#888}
-    .header-action-btn.gold{border-color:#c9a84c33;color:#c9a84c}
-    .header-action-btn.gold:hover{background:#c9a84c11}
-
-    /* Empty state */
-    #empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+    #chat-title{font-size:14px;color:#666;font-weight:400}
+    .header-action-btn{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid #c9a84c33;background:transparent;color:#c9a84c;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
+    .header-action-btn:hover{background:#c9a84c11}
+    #empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:1}
     #empty-state.hide{display:none}
-    .empty-logo{font-size:40px;font-weight:700;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;opacity:0.6;font-style:normal}
-    .empty-sub{font-size:13px;color:#333;margin-bottom:32px}
+    .empty-logo{font-size:36px;font-weight:700;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;letter-spacing:-1px}
+    .empty-sub{font-size:13px;color:#2a2a2a;margin-bottom:28px}
     .empty-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:500px;pointer-events:all}
-    .empty-chip{font-size:12px;padding:8px 16px;border-radius:20px;border:1px solid #1e1e1e;background:#111;color:#666;cursor:pointer;transition:all 0.15s}
+    .empty-chip{font-size:12px;padding:8px 16px;border-radius:20px;border:1px solid #1e1e1e;background:#111;color:#555;cursor:pointer;transition:all 0.15s}
     .empty-chip:hover{border-color:#c9a84c44;color:#c9a84c;background:#c9a84c0a}
-
-    /* Messages */
-    #msgs{flex:1;overflow-y:auto;padding:24px 20%;display:flex;flex-direction:column;gap:20px;position:relative}
+    #msg-wrap{flex:1;position:relative;overflow:hidden}
+    #msgs{height:100%;overflow-y:auto;padding:24px 15%;display:flex;flex-direction:column;gap:20px}
     #msgs::-webkit-scrollbar{width:4px}
     #msgs::-webkit-scrollbar-thumb{background:#1a1a1a;border-radius:4px}
     .msg{display:flex;gap:12px;align-items:flex-start;animation:fadeUp 0.3s ease}
     @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .msg.user{flex-direction:row-reverse}
-    .ai-label{font-size:11px;font-weight:600;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;display:block}
+    .ai-label{font-size:11px;font-weight:600;background:linear-gradient(135deg,#c9a84c,#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px;display:block;letter-spacing:0.2px}
     .bubble{max-width:100%;padding:14px 18px;border-radius:16px;font-size:14px;line-height:1.8}
     .bubble.ai{background:#111;border:1px solid #1a1a1a;color:#e0e0e0;border-radius:4px 16px 16px 16px}
-    .bubble.user{background:linear-gradient(135deg,#c9a84c,#f0c060);color:#000;font-weight:500;border-radius:16px 4px 16px 16px;max-width:70%}
+    .bubble.user{background:linear-gradient(135deg,#c9a84c,#f0c060);color:#000;font-weight:500;border-radius:16px 4px 16px 16px;max-width:65%}
     .bubble.typing{color:#444;background:#111;border:1px solid #1a1a1a}
     .bubble.limit{background:#1a1508;border:1px solid #c9a84c22;color:#d0b880;border-radius:16px;padding:16px 20px}
     .bubble.limit a{color:#c9a84c;text-decoration:none;font-weight:500}
-    .bubble.cooldown{background:#111;border:1px solid #1e1e1e;color:#666;border-radius:16px;padding:14px 18px;font-size:13px}
+    .bubble.cooldown{background:#111;border:1px solid #1e1e1e;color:#555;border-radius:16px;padding:14px 18px;font-size:13px}
     .typing-dots{display:flex;gap:4px;padding:4px 0}
-    .typing-dots span{width:6px;height:6px;border-radius:50%;background:#444;animation:bounce 1.4s infinite}
+    .typing-dots span{width:6px;height:6px;border-radius:50%;background:#333;animation:bounce 1.4s infinite}
     .typing-dots span:nth-child(2){animation-delay:0.2s}
     .typing-dots span:nth-child(3){animation-delay:0.4s}
     @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-    .img-bubble{max-width:300px;border-radius:12px;border:1px solid #2a2a2a;margin-bottom:6px;display:block}
-
-    /* Input */
-    #input-area{padding:16px 20%;flex-shrink:0}
+    .img-bubble{max-width:280px;border-radius:12px;border:1px solid #2a2a2a;margin-bottom:6px;display:block}
+    #input-area{padding:16px 15%;flex-shrink:0;background:#0a0a0a}
     #preview-wrap{margin-bottom:8px;display:none}
-    #input-box{background:#111;border:1px solid #222;border-radius:16px;padding:12px 12px 12px 18px;transition:border-color 0.2s}
+    #input-box{background:#111;border:1px solid #1e1e1e;border-radius:16px;padding:12px 12px 12px 18px;transition:border-color 0.2s}
     #input-box:focus-within{border-color:#c9a84c33}
     #inp-row{display:flex;gap:8px;align-items:flex-end}
     #inp{flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#e0e0e0;font-family:'Inter',sans-serif;resize:none;max-height:120px;line-height:1.6;min-height:24px}
-    #inp::placeholder{color:#333}
-    #img-btn{width:32px;height:32px;border-radius:10px;border:1px solid #2a2a2a;background:transparent;color:#444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.2s;flex-shrink:0}
+    #inp::placeholder{color:#2a2a2a}
+    #img-btn{width:30px;height:30px;border-radius:8px;border:1px solid #2a2a2a;background:transparent;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;flex-shrink:0}
     #img-btn:hover{border-color:#c9a84c44;color:#c9a84c}
-    #send-btn{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+    #send-btn{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
     #send-btn:hover{transform:scale(1.05)}
     #send-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none}
-    #send-btn svg{width:14px;height:14px;fill:#000}
-    #disclaimer{font-size:11px;color:#222;text-align:center;margin-top:8px}
+    #send-btn svg{width:13px;height:13px;fill:#000}
+    #disclaimer{font-size:11px;color:#1e1e1e;text-align:center;margin-top:8px}
     #file-input{display:none}
-
-    /* Code modal */
-    #code-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+    #code-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
     #code-modal.show{display:flex}
     .code-modal-inner{background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:28px;width:92%;max-width:400px}
     .code-modal-inner h3{font-size:17px;font-weight:600;margin-bottom:6px}
     .code-modal-inner p{font-size:13px;color:#555;margin-bottom:20px;line-height:1.5}
     .code-inp{width:100%;padding:12px 16px;border-radius:12px;border:1px solid #222;background:#1a1a1a;color:#e0e0e0;font-size:14px;outline:none;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif;margin-bottom:8px;transition:border-color 0.2s}
     .code-inp:focus{border-color:#c9a84c44}
-    .code-msg{font-size:12px;margin-bottom:12px;min-height:16px}
-    .code-msg.ok{color:#22c55e}
-    .code-msg.err{color:#ef4444}
+    .code-msg-el{font-size:12px;margin-bottom:12px;min-height:16px}
+    .code-msg-el.ok{color:#22c55e}
+    .code-msg-el.err{color:#ef4444}
     .modal-btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:8px;font-family:'Inter',sans-serif}
     .btn-gold{background:linear-gradient(135deg,#c9a84c,#f0c060);border:none;color:#000}
     .btn-gold:hover{transform:translateY(-1px)}
     .btn-ghost{background:transparent;border:1px solid #222;color:#555}
     .btn-ghost:hover{border-color:#333;color:#666}
-
+    #sync-indicator{font-size:11px;color:#333;text-align:right;padding:0 15%;margin-bottom:4px;height:14px}
     @media(max-width:768px){
       #sidebar{display:none}
       #msgs{padding:16px}
       #input-area{padding:12px 16px}
+      #sync-indicator{padding:0 16px}
     }
   </style>
 </head>
@@ -177,19 +163,18 @@
 
 <!-- APP -->
 <div id="app">
-  <!-- Sidebar -->
   <div id="sidebar">
     <div id="sidebar-header">
       <div id="sidebar-logo">Moon Back AI</div>
       <button id="new-chat-btn" onclick="newChat()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Percakapan Baru
       </button>
     </div>
     <div id="conv-list"></div>
     <div id="sidebar-footer">
       <div id="user-card">
-        <img id="sidebar-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
+        <img id="sidebar-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="av">
         <span id="sidebar-username">User</span>
         <span id="sidebar-tier" class="badge-free">Free</span>
         <button id="logout-btn" onclick="logout()" title="Keluar">⏻</button>
@@ -197,31 +182,29 @@
     </div>
   </div>
 
-  <!-- Main -->
   <div id="main">
     <div id="chat-header">
       <span id="chat-title">Percakapan Baru</span>
-      <div id="header-actions">
-        <button class="header-action-btn gold" onclick="showCodeModal()" id="upgrade-header-btn">⚡ Upgrade</button>
+      <div>
+        <button class="header-action-btn" onclick="showCodeModal()" id="upgrade-btn">🔑 Kode Akses</button>
       </div>
     </div>
-
-    <!-- Empty state -->
-    <div id="empty-state">
-      <div class="empty-logo">Moon Back AI</div>
-      <div class="empty-sub">Tanya apapun tentang financial market</div>
-      <div class="empty-chips">
-        <button class="empty-chip" onclick="sendChip('Berapa harga BTC sekarang?')">💰 Harga BTC</button>
-        <button class="empty-chip" onclick="sendChip('Berapa harga ETH sekarang?')">💎 Harga ETH</button>
-        <button class="empty-chip" onclick="sendChip('Berapa harga emas sekarang?')">🥇 Harga Emas</button>
-        <button class="empty-chip" onclick="sendChip('Analisis teknikal BTC hari ini')">📊 Analisis BTC</button>
-        <button class="empty-chip" onclick="sendChip('Cara mulai investasi crypto untuk pemula?')">🔰 Cara mulai</button>
-        <button class="empty-chip" onclick="sendChip('Saham apa yang bagus untuk pemula?')">📈 Saham pemula</button>
+    <div id="sync-indicator"></div>
+    <div id="msg-wrap">
+      <div id="empty-state">
+        <div class="empty-logo">Moon Back AI</div>
+        <div class="empty-sub">Tanya apapun tentang financial market</div>
+        <div class="empty-chips">
+          <button class="empty-chip" onclick="sendChip('Berapa harga BTC sekarang?')">💰 Harga BTC</button>
+          <button class="empty-chip" onclick="sendChip('Berapa harga ETH sekarang?')">💎 Harga ETH</button>
+          <button class="empty-chip" onclick="sendChip('Berapa harga emas sekarang?')">🥇 Harga Emas</button>
+          <button class="empty-chip" onclick="sendChip('Analisis teknikal BTC hari ini')">📊 Analisis BTC</button>
+          <button class="empty-chip" onclick="sendChip('Cara mulai investasi crypto untuk pemula?')">🔰 Cara mulai</button>
+          <button class="empty-chip" onclick="sendChip('Saham apa yang bagus untuk pemula?')">📈 Saham pemula</button>
+        </div>
       </div>
+      <div id="msgs"></div>
     </div>
-
-    <div id="msgs"></div>
-
     <div id="input-area">
       <div id="preview-wrap">
         <div style="position:relative;display:inline-block">
@@ -246,186 +229,230 @@
 <!-- Code Modal -->
 <div id="code-modal">
   <div class="code-modal-inner">
-    <h3>🔑 Masukkan Kode Akses</h3>
-    <p>Punya kode Premium atau Premium+? Masukkan di sini untuk upgrade akses AI kamu.</p>
+    <h3>🔑 Kode Akses</h3>
+    <p>Masukkan kode Premium atau Premium+ untuk upgrade akses AI kamu.</p>
     <input class="code-inp" id="code-inp" type="text" placeholder="CONTOH: MB-ABC123" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
-    <div class="code-msg" id="code-msg"></div>
-    <button class="modal-btn btn-gold" onclick="activateCode()">✓ Aktifkan Kode</button>
+    <div class="code-msg-el" id="code-msg"></div>
+    <button class="modal-btn btn-gold" onclick="activateCode()">✓ Aktifkan</button>
     <button class="modal-btn btn-ghost" onclick="closeCodeModal()">Tutup</button>
-    <div style="margin-top:12px;padding:12px;background:#1a1a1a;border-radius:10px;font-size:12px;color:#555;line-height:1.6">
-      Belum punya kode? Beli membership:<br>
-      Transfer ke GoPay/OVO/Dana: <strong style="color:#888">081299950286</strong><br>
-      DM: <strong style="color:#888">@marchoadhari023</strong>
+    <div style="margin-top:10px;padding:12px;background:#1a1a1a;border-radius:10px;font-size:12px;color:#444;line-height:1.7">
+      Belum punya kode?<br>
+      Transfer ke GoPay/OVO/Dana: <strong style="color:#666">081299950286</strong><br>
+      DM Discord: <strong style="color:#666">@marchoadhari023</strong>
     </div>
   </div>
 </div>
 
 <script>
-// ===== STATE =====
-let currentUser = null;
-let pendingImage = null;
-let currentConvId = null;
-let conversations = {};
-let currentHistory = [];
+let currentUser=null,pendingImage=null,currentConvId=null,currentHistory=[];
+const DISCORD='https://discord.gg/xMtR4zagJ';
+const FREE_LIMIT=10,SESSION_MS=5*60*60*1000,COOLDOWN_MS=1.5*60*60*1000;
+const USER_KEY='moonback_user_v2',SESSION_KEY='moonback_session';
 
-const DISCORD = 'https://discord.gg/xMtR4zagJ';
-const FREE_LIMIT = 10;
-const SESSION_MS = 5*60*60*1000;
-const COOLDOWN_MS = 1.5*60*60*1000;
-const USER_KEY = 'moonback_user';
-const CONVS_KEY = 'moonback_conversations';
-const USAGE_KEY = 'moonback_usage';
-const SESSION_KEY = 'moonback_session';
-
-// ===== UTILS =====
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function getToday(){return new Date().toISOString().split('T')[0];}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 
+// Usage tracking
 function getUsage(){
-  try{
-    const r=localStorage.getItem(USAGE_KEY);
-    if(!r)return{date:getToday(),count:0};
-    const d=JSON.parse(r);
-    if(d.date!==getToday())return{date:getToday(),count:0};
-    return d;
-  }catch{return{date:getToday(),count:0};}
+  try{const r=localStorage.getItem('moonback_usage');if(!r)return{date:getToday(),count:0};const d=JSON.parse(r);if(d.date!==getToday())return{date:getToday(),count:0};return d;}
+  catch{return{date:getToday(),count:0};}
 }
-function saveUsage(d){try{localStorage.setItem(USAGE_KEY,JSON.stringify(d));}catch{}}
+function saveUsage(d){try{localStorage.setItem('moonback_usage',JSON.stringify(d));}catch{}}
 
+// Session tracking
 function getSessionData(){
   try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{"sessionStart":0,"inCooldown":false,"cooldownStart":0}');}
   catch{return{sessionStart:0,inCooldown:false,cooldownStart:0};}
 }
 function saveSessionData(d){try{localStorage.setItem(SESSION_KEY,JSON.stringify(d));}catch{}}
-
 function canAsk(){
-  const now=Date.now();
-  const s=getSessionData();
+  const now=Date.now(),s=getSessionData();
   if(s.inCooldown){
     const end=s.cooldownStart+COOLDOWN_MS;
-    if(now<end){
-      const mins=Math.ceil((end-now)/60000);
-      const h=Math.floor(mins/60),m=mins%60;
-      return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`};
-    }
-    saveSessionData({sessionStart:now,inCooldown:false,cooldownStart:0});
-    return{can:true};
+    if(now<end){const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`};}
+    saveSessionData({sessionStart:now,inCooldown:false,cooldownStart:0});return{can:true};
   }
   if(s.sessionStart===0){saveSessionData({sessionStart:now,inCooldown:false,cooldownStart:0});return{can:true};}
-  if(now>=s.sessionStart+SESSION_MS){
-    saveSessionData({sessionStart:s.sessionStart,inCooldown:true,cooldownStart:now});
-    return{can:false,time:'1 jam 30 menit'};
-  }
+  if(now>=s.sessionStart+SESSION_MS){saveSessionData({sessionStart:s.sessionStart,inCooldown:true,cooldownStart:now});return{can:false,time:'1 jam 30 menit'};}
   return{can:true};
 }
 
-// ===== CONVERSATIONS =====
-function loadConversations(){
-  try{conversations=JSON.parse(localStorage.getItem(CONVS_KEY)||'{}');}
-  catch{conversations={};}
+// ===== DATABASE =====
+function setSyncStatus(msg,color){
+  const el=document.getElementById('sync-indicator');
+  if(el){el.textContent=msg;el.style.color=color||'#333';}
 }
-function saveConversations(){
-  try{localStorage.setItem(CONVS_KEY,JSON.stringify(conversations));}catch{}
+
+async function dbGetConversations(){
+  if(!currentUser?.id)return[];
+  try{
+    const r=await fetch(`/api/conversations?userId=${currentUser.id}`);
+    const d=await r.json();
+    return d.conversations||[];
+  }catch{return[];}
+}
+
+async function dbSaveConversation(conv){
+  if(!currentUser?.id||currentUser?.isGuest)return;
+  try{
+    setSyncStatus('Menyimpan...','#333');
+    await fetch('/api/conversations',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'save',userId:currentUser.id,convId:conv.id,title:conv.title,history:conv.history})
+    });
+    setSyncStatus('','');
+  }catch{setSyncStatus('','');}
+}
+
+async function dbRenameConversation(convId,title){
+  if(!currentUser?.id||currentUser?.isGuest)return;
+  try{
+    await fetch('/api/conversations',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'rename',userId:currentUser.id,convId,title})
+    });
+  }catch{}
+}
+
+async function dbDeleteConversation(convId){
+  if(!currentUser?.id||currentUser?.isGuest)return;
+  try{
+    await fetch('/api/conversations',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'delete',userId:currentUser.id,convId})
+    });
+  }catch{}
+}
+
+// ===== CONVERSATIONS =====
+let conversations={};
+
+async function loadConversationsFromDB(){
+  const data=await dbGetConversations();
+  conversations={};
+  data.forEach(c=>{conversations[c.id]=c;});
+  renderConvList();
+  if(Object.keys(conversations).length===0){newChat();}
+  else{
+    const latest=Object.values(conversations).sort((a,b)=>b.updated_at-a.updated_at)[0];
+    loadConv(latest.id);
+  }
 }
 
 function newChat(){
-  currentConvId = uid();
-  currentHistory = [];
-  conversations[currentConvId] = {
-    id: currentConvId,
-    title: 'Percakapan Baru',
-    history: [],
-    createdAt: Date.now()
-  };
-  saveConversations();
-  renderConvList();
-  document.getElementById('msgs').innerHTML = '';
-  document.getElementById('chat-title').textContent = 'Percakapan Baru';
+  currentConvId=uid();
+  currentHistory=[];
+  conversations[currentConvId]={id:currentConvId,title:'Percakapan Baru',history:[],created_at:Date.now(),updated_at:Date.now()};
+  document.getElementById('msgs').innerHTML='';
+  document.getElementById('chat-title').textContent='Percakapan Baru';
   document.getElementById('empty-state').classList.remove('hide');
+  renderConvList();
   document.getElementById('inp').focus();
 }
 
 function loadConv(id){
-  currentConvId = id;
-  const conv = conversations[id];
-  if(!conv) return;
-  currentHistory = [...(conv.history || [])];
-  document.getElementById('msgs').innerHTML = '';
-  document.getElementById('chat-title').textContent = conv.title;
-  document.getElementById('empty-state').classList.add('hide');
-  conv.history.forEach(msg => {
-    if(msg.role === 'user'){
-      const w=document.createElement('div');
-      w.className='msg user';
-      const b=document.createElement('div');
-      b.className='bubble user';
-      b.textContent = typeof msg.content === 'string' ? msg.content : '[Gambar]';
-      w.appendChild(b);
-      document.getElementById('msgs').appendChild(w);
-    } else {
-      const inner=document.createElement('div');
-      inner.style.cssText='flex:1;min-width:0';
-      const lbl=document.createElement('span');
-      lbl.className='ai-label';lbl.textContent='Moon Back AI';
-      const b=document.createElement('div');
-      b.className='bubble ai';
-      b.innerHTML=(msg.content||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-      inner.appendChild(lbl);inner.appendChild(b);
-      const w=document.createElement('div');
-      w.className='msg';w.appendChild(inner);
-      document.getElementById('msgs').appendChild(w);
-    }
-  });
-  document.getElementById('msgs').scrollTop = document.getElementById('msgs').scrollHeight;
+  currentConvId=id;
+  const conv=conversations[id];
+  if(!conv)return;
+  currentHistory=[...(conv.history||[])];
+  const msgsEl=document.getElementById('msgs');
+  msgsEl.innerHTML='';
+  document.getElementById('chat-title').textContent=conv.title;
+  if(conv.history&&conv.history.length>0){
+    document.getElementById('empty-state').classList.add('hide');
+    conv.history.forEach(msg=>{
+      if(msg.role==='user'){
+        const w=document.createElement('div');w.className='msg user';
+        const b=document.createElement('div');b.className='bubble user';
+        b.textContent=typeof msg.content==='string'?msg.content:'[Gambar]';
+        w.appendChild(b);msgsEl.appendChild(w);
+      }else{
+        const inner=document.createElement('div');inner.style.cssText='flex:1;min-width:0';
+        const lbl=document.createElement('span');lbl.className='ai-label';lbl.textContent='Moon Back AI';
+        const b=document.createElement('div');b.className='bubble ai';
+        b.innerHTML=(msg.content||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+        inner.appendChild(lbl);inner.appendChild(b);
+        const w=document.createElement('div');w.className='msg';w.appendChild(inner);msgsEl.appendChild(w);
+      }
+    });
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+  }else{
+    document.getElementById('empty-state').classList.remove('hide');
+  }
   renderConvList();
 }
 
-function deleteConv(id, e){
+function startRename(id,e){
+  e.stopPropagation();
+  const conv=conversations[id];
+  if(!conv)return;
+  const item=document.querySelector(`.conv-item[data-id="${id}"] .conv-title-text`);
+  if(!item)return;
+  const input=document.createElement('input');
+  input.className='conv-title-input';
+  input.value=conv.title;
+  item.replaceWith(input);
+  input.focus();input.select();
+  async function finishRename(){
+    const newTitle=input.value.trim()||'Percakapan Baru';
+    conversations[id].title=newTitle;
+    await dbRenameConversation(id,newTitle);
+    if(currentConvId===id)document.getElementById('chat-title').textContent=newTitle;
+    renderConvList();
+  }
+  input.addEventListener('blur',finishRename);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();input.blur();}if(e.key==='Escape'){input.blur();}});
+}
+
+async function deleteConv(id,e){
   e.stopPropagation();
   delete conversations[id];
-  saveConversations();
-  if(currentConvId === id) newChat();
+  await dbDeleteConversation(id);
+  if(currentConvId===id)newChat();
   else renderConvList();
 }
 
 function renderConvList(){
-  const list = document.getElementById('conv-list');
-  const sorted = Object.values(conversations).sort((a,b)=>b.createdAt-a.createdAt);
-  list.innerHTML = '';
-  sorted.forEach(conv => {
-    const item = document.createElement('div');
-    item.className = 'conv-item' + (conv.id === currentConvId ? ' active' : '');
-    item.innerHTML = `
-      <div class="conv-item-wrap">
-        <div style="flex:1;min-width:0">
-          <div class="conv-title">${conv.title}</div>
-          <div class="conv-date">${new Date(conv.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short'})}</div>
-        </div>
-        <button class="conv-del" onclick="deleteConv('${conv.id}',event)">✕</button>
-      </div>`;
-    item.addEventListener('click', ()=>loadConv(conv.id));
+  const list=document.getElementById('conv-list');
+  const sorted=Object.values(conversations).sort((a,b)=>(b.updated_at||b.created_at||0)-(a.updated_at||a.created_at||0));
+  list.innerHTML='';
+  sorted.forEach(conv=>{
+    const item=document.createElement('div');
+    item.className='conv-item'+(conv.id===currentConvId?' active':'');
+    item.dataset.id=conv.id;
+    item.innerHTML=`<div class="conv-row">
+      <span class="conv-title-text">${conv.title}</span>
+      <div class="conv-actions">
+        <button class="conv-act-btn" title="Ganti nama">✏️</button>
+        <button class="conv-act-btn del" title="Hapus">✕</button>
+      </div>
+    </div>
+    <div class="conv-date">${new Date(conv.updated_at||conv.created_at||Date.now()).toLocaleDateString('id-ID',{day:'numeric',month:'short'})}</div>`;
+    item.querySelector('.conv-act-btn:first-child').addEventListener('click',e=>startRename(conv.id,e));
+    item.querySelector('.conv-act-btn.del').addEventListener('click',e=>deleteConv(conv.id,e));
+    item.addEventListener('click',()=>loadConv(conv.id));
     list.appendChild(item);
   });
 }
 
 // ===== AUTH =====
 function checkDiscordCallback(){
-  const params = new URLSearchParams(window.location.search);
-  const discordData = params.get('discord');
+  const params=new URLSearchParams(window.location.search);
+  const discordData=params.get('discord');
   if(discordData){
     try{
-      const user = JSON.parse(atob(decodeURIComponent(discordData)));
-      currentUser = user;
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-      window.history.replaceState({}, '', '/');
-      showApp();
-      return;
+      const user=JSON.parse(atob(decodeURIComponent(discordData)));
+      currentUser=user;
+      localStorage.setItem(USER_KEY,JSON.stringify(user));
+      window.history.replaceState({},'','/');
+      showApp();return;
     }catch(e){}
   }
-  const savedUser = localStorage.getItem(USER_KEY);
-  if(savedUser){
-    try{currentUser=JSON.parse(savedUser);showApp();return;}catch(e){}
-  }
+  const saved=localStorage.getItem(USER_KEY);
+  if(saved){try{currentUser=JSON.parse(saved);showApp();return;}catch(e){}}
   showLanding();
 }
 
@@ -438,140 +465,102 @@ function showApp(){
   document.getElementById('landing').classList.add('hide');
   document.getElementById('app').classList.add('show');
   updateSidebar();
-  loadConversations();
-  if(Object.keys(conversations).length === 0) newChat();
-  else {
-    const latest = Object.values(conversations).sort((a,b)=>b.createdAt-a.createdAt)[0];
-    loadConv(latest.id);
-  }
-  const tier = currentUser?.tier || 'free';
+  const tier=currentUser?.tier||'free';
   if(tier==='admin'||tier==='premiumplus'||tier==='premium'){
-    document.getElementById('upgrade-header-btn').style.display='none';
+    document.getElementById('upgrade-btn').style.display='none';
+  }
+  if(currentUser?.isGuest){
+    // Guest: use localStorage only
+    conversations={};
+    newChat();
+  }else{
+    loadConversationsFromDB();
   }
 }
 
 function updateSidebar(){
-  if(!currentUser) return;
-  const {username,avatar,id,tier} = currentUser;
-  const avatarEl = document.getElementById('sidebar-avatar');
-  if(avatar&&id) avatarEl.src=`https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=64`;
-  document.getElementById('sidebar-username').textContent = username||'User';
-  const badge = document.getElementById('sidebar-tier');
-  const tierMap = {
-    free:['badge-free','Free'],
-    classic:['badge-classic','Classic'],
-    premium:['badge-premium','🌙 Premium'],
-    premiumplus:['badge-premiumplus','⚡ Premium+'],
-    admin:['badge-admin','👑 Admin']
-  };
-  const [cls,label] = tierMap[tier]||tierMap.free;
-  badge.className = cls;
-  badge.textContent = label;
+  if(!currentUser)return;
+  const{username,avatar,id,tier}=currentUser;
+  if(avatar&&id)document.getElementById('sidebar-avatar').src=`https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=64`;
+  document.getElementById('sidebar-username').textContent=username||'User';
+  const badge=document.getElementById('sidebar-tier');
+  const map={free:['badge-free','Free'],classic:['badge-classic','Classic'],premium:['badge-premium','🌙 Premium'],premiumplus:['badge-premiumplus','⚡ Premium+'],admin:['badge-admin','👑 Admin']};
+  const[cls,label]=map[tier]||map.free;
+  badge.className=cls;badge.textContent=label;
 }
 
-function enterAsGuest(){
-  currentUser={username:'Tamu',tier:'free',isGuest:true};
-  showApp();
-}
+function enterAsGuest(){currentUser={username:'Tamu',tier:'free',isGuest:true};showApp();}
 
 function logout(){
   localStorage.removeItem(USER_KEY);
-  currentUser=null;
-  conversations={};
-  currentHistory=[];
+  currentUser=null;conversations={};currentHistory=[];
   document.getElementById('msgs').innerHTML='';
   showLanding();
 }
 
 // ===== CODE MODAL =====
-function showCodeModal(){
-  document.getElementById('code-modal').classList.add('show');
-}
+function showCodeModal(){document.getElementById('code-modal').classList.add('show');}
 function closeCodeModal(){
   document.getElementById('code-modal').classList.remove('show');
   document.getElementById('code-msg').textContent='';
   document.getElementById('code-inp').value='';
 }
-
 async function activateCode(){
-  const code = document.getElementById('code-inp').value.trim().toUpperCase();
-  const msgEl = document.getElementById('code-msg');
-  if(!code){msgEl.textContent='Masukkan kode dulu.';msgEl.className='code-msg err';return;}
-  msgEl.textContent='Verifikasi...';msgEl.className='code-msg';
+  const code=document.getElementById('code-inp').value.trim().toUpperCase();
+  const msgEl=document.getElementById('code-msg');
+  if(!code){msgEl.textContent='Masukkan kode dulu.';msgEl.className='code-msg-el err';return;}
+  msgEl.textContent='Verifikasi...';msgEl.className='code-msg-el';
   try{
-    const r = await fetch('/api/verify-member',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
-    const d = await r.json();
+    const r=await fetch('/api/verify-member',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    const d=await r.json();
     if(d.success){
-      currentUser = {...currentUser, tier: d.tier};
-      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
-      msgEl.textContent='✓ '+d.message;msgEl.className='code-msg ok';
+      currentUser={...currentUser,tier:d.tier};
+      localStorage.setItem(USER_KEY,JSON.stringify(currentUser));
+      msgEl.textContent='✓ '+d.message;msgEl.className='code-msg-el ok';
       setTimeout(()=>{
-        closeCodeModal();
-        updateSidebar();
-        document.getElementById('upgrade-header-btn').style.display='none';
-        addMsg('ai',`Akses ${d.tier==='premiumplus'?'Premium+':'Premium'} aktif! 🎉 Sekarang kamu bisa tanya lebih banyak dengan analisis yang lebih mendalam.`);
+        closeCodeModal();updateSidebar();
+        document.getElementById('upgrade-btn').style.display='none';
+        addMsg('ai',`Akses ${d.tier==='premiumplus'?'Premium+':'Premium'} aktif! 🎉 AI kamu sekarang jauh lebih canggih.`);
       },1200);
-    }else{msgEl.textContent='✗ '+d.message;msgEl.className='code-msg err';}
-  }catch{msgEl.textContent='Koneksi bermasalah.';msgEl.className='code-msg err';}
+    }else{msgEl.textContent='✗ '+d.message;msgEl.className='code-msg-el err';}
+  }catch{msgEl.textContent='Koneksi bermasalah.';msgEl.className='code-msg-el err';}
 }
 
-// ===== CHAT =====
+// ===== IMAGE =====
 function handleImageUpload(e){
-  const file=e.target.files[0];
-  if(!file)return;
+  const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=function(ev){
     pendingImage={base64:ev.target.result.split(',')[1],type:file.type};
     document.getElementById('preview-img').src=ev.target.result;
     document.getElementById('preview-wrap').style.display='block';
   };
-  reader.readAsDataURL(file);
-  e.target.value='';
+  reader.readAsDataURL(file);e.target.value='';
 }
-function removeImage(){
-  pendingImage=null;
-  document.getElementById('preview-wrap').style.display='none';
-  document.getElementById('preview-img').src='';
-}
+function removeImage(){pendingImage=null;document.getElementById('preview-wrap').style.display='none';document.getElementById('preview-img').src='';}
 
+// ===== MESSAGES =====
 function addMsg(role,text,typing,limitType){
   const msgsEl=document.getElementById('msgs');
   document.getElementById('empty-state').classList.add('hide');
   const w=document.createElement('div');
   w.className='msg'+(role==='user'?' user':'');
   if(role==='ai'){
-    const inner=document.createElement('div');
-    inner.style.cssText='flex:1;min-width:0';
-    const lbl=document.createElement('span');
-    lbl.className='ai-label';lbl.textContent='Moon Back AI';
+    const inner=document.createElement('div');inner.style.cssText='flex:1;min-width:0';
+    const lbl=document.createElement('span');lbl.className='ai-label';lbl.textContent='Moon Back AI';
     inner.appendChild(lbl);
     const b=document.createElement('div');
-    if(typing){
-      b.className='bubble ai typing';
-      b.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
-    }else if(limitType==='free'){
+    if(typing){b.className='bubble ai typing';b.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';}
+    else if(limitType==='free'){
       b.className='bubble limit';
-      b.innerHTML=`Kamu sudah mencapai batas hari ini. 🌙<br><br>
-        <strong>Mau akses lebih banyak?</strong><br><br>
-        <a href="/api/auth-login">🔑 Login Discord</a> — akses sesuai membership<br>
-        <a href="javascript:void(0)" onclick="showCodeModal()">🎫 Punya kode akses?</a><br><br>
-        <span style="font-size:12px;color:#666"><a href="${DISCORD}" target="_blank" style="color:#5865F2">Join Discord komunitas →</a></span>`;
-    }else if(limitType==='cooldown'){
-      b.className='bubble cooldown';
-      b.innerHTML=text;
-    }else{
-      b.className='bubble ai';
-      b.innerHTML=(text||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-    }
+      b.innerHTML=`Kamu sudah mencapai batas hari ini. 🌙<br><br><strong>Mau akses lebih?</strong><br><br><a href="/api/auth-login">🔑 Login Discord</a> — akses sesuai membership<br><a href="javascript:void(0)" onclick="showCodeModal()">🎫 Punya kode akses?</a><br><br><span style="font-size:12px;color:#555"><a href="${DISCORD}" target="_blank" style="color:#5865F2">Join komunitas Discord →</a></span>`;
+    }else if(limitType==='cooldown'){b.className='bubble cooldown';b.innerHTML=text;}
+    else{b.className='bubble ai';b.innerHTML=(text||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
     inner.appendChild(b);w.appendChild(inner);
   }else{
-    const b=document.createElement('div');
-    b.className='bubble user';
-    b.textContent=text;
-    w.appendChild(b);
+    const b=document.createElement('div');b.className='bubble user';b.textContent=text;w.appendChild(b);
   }
-  msgsEl.appendChild(w);
-  msgsEl.scrollTop=msgsEl.scrollHeight;
+  msgsEl.appendChild(w);msgsEl.scrollTop=msgsEl.scrollHeight;
   return w.querySelector('.bubble');
 }
 
@@ -580,100 +569,56 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 async function sendChip(t){document.getElementById('inp').value=t;await sendMsg();}
 
 async function sendMsg(){
-  const inpEl=document.getElementById('inp');
-  const sendBtn=document.getElementById('send-btn');
-  const t=inpEl.value.trim();
-  const hasImage=pendingImage!==null;
+  const inpEl=document.getElementById('inp'),sendBtn=document.getElementById('send-btn');
+  const t=inpEl.value.trim(),hasImage=pendingImage!==null;
   if(!t&&!hasImage)return;
-
   const tier=currentUser?.tier||'free';
-
-  // Check limits
   if(tier==='free'||tier==='classic'){
     const usage=getUsage();
-    if(usage.count>=FREE_LIMIT){
-      addMsg('ai','','','free');
-      inpEl.value='';return;
-    }
+    if(usage.count>=FREE_LIMIT){addMsg('ai','','','free');inpEl.value='';return;}
     usage.count+=1;saveUsage(usage);
   }else if(tier!=='admin'){
     const check=canAsk();
-    if(!check.can){
-      addMsg('ai',`Sesi kamu sedang istirahat, lanjut dalam <strong>${check.time}</strong> ya. 🌙<br><br>Sambil nunggu, diskusi di <a href="${DISCORD}" target="_blank" style="color:#c9a84c">Discord komunitas</a>!`,'','cooldown');
-      inpEl.value='';return;
-    }
+    if(!check.can){addMsg('ai',`Sesi kamu sedang istirahat, lanjut dalam <strong>${check.time}</strong> ya. 🌙<br><br>Sambil nunggu, diskusi di <a href="${DISCORD}" target="_blank" style="color:#c9a84c">Discord komunitas</a>!`,'','cooldown');inpEl.value='';return;}
   }
-
   const userText=t||'Tolong analisis gambar ini';
-  inpEl.value='';inpEl.style.height='auto';
-  sendBtn.disabled=true;
-
-  // Show user message
-  const w=document.createElement('div');
-  w.className='msg user';
-  const b=document.createElement('div');
-  b.className='bubble user';
-  if(hasImage){
-    const img=document.createElement('img');
-    img.src=document.getElementById('preview-img').src;
-    img.className='img-bubble';
-    b.appendChild(img);
-    if(t){const txt=document.createElement('div');txt.style.marginTop='4px';txt.textContent=t;b.appendChild(txt);}
-  }else{b.textContent=userText;}
+  inpEl.value='';inpEl.style.height='auto';sendBtn.disabled=true;
+  const w=document.createElement('div');w.className='msg user';
+  const b=document.createElement('div');b.className='bubble user';
+  if(hasImage){const img=document.createElement('img');img.src=document.getElementById('preview-img').src;img.className='img-bubble';b.appendChild(img);if(t){const txt=document.createElement('div');txt.style.marginTop='4px';txt.textContent=t;b.appendChild(txt);}}
+  else{b.textContent=userText;}
   w.appendChild(b);
-  const msgsEl=document.getElementById('msgs');
   document.getElementById('empty-state').classList.add('hide');
-  msgsEl.appendChild(w);
-  msgsEl.scrollTop=msgsEl.scrollHeight;
-
-  let msgContent;
-  if(hasImage){
-    msgContent=[
-      {type:'image',source:{type:'base64',media_type:pendingImage.type,data:pendingImage.base64}},
-      {type:'text',text:t||'Tolong analisis gambar/chart ini.'}
-    ];
-  }else{msgContent=userText;}
-
+  const msgsEl=document.getElementById('msgs');
+  msgsEl.appendChild(w);msgsEl.scrollTop=msgsEl.scrollHeight;
+  let msgContent=hasImage?[{type:'image',source:{type:'base64',media_type:pendingImage.type,data:pendingImage.base64}},{type:'text',text:t||'Tolong analisis gambar/chart ini.'}]:userText;
   currentHistory.push({role:'user',content:msgContent});
   removeImage();
-
   const lb=addMsg('ai','',true);
-
   try{
-    const r=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier})
-    });
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier})});
     const d=await r.json();
     const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
     lb.className='bubble ai';
     lb.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
     currentHistory.push({role:'assistant',content:reply});
-
-    // Save to conversation
-    if(currentConvId){
-      if(!conversations[currentConvId]) conversations[currentConvId]={id:currentConvId,title:'Percakapan Baru',history:[],createdAt:Date.now()};
-      conversations[currentConvId].history = currentHistory.map(m=>({
-        role:m.role,
-        content:typeof m.content==='string'?m.content:(Array.isArray(m.content)?m.content.find(c=>c.type==='text')?.text||'[Gambar]':m.content)
-      }));
-      // Auto title dari pesan pertama
-      if(conversations[currentConvId].title==='Percakapan Baru'&&currentHistory.length>=2){
-        const firstMsg = typeof currentHistory[0].content==='string'?currentHistory[0].content:'Analisis Chart';
-        conversations[currentConvId].title = firstMsg.slice(0,40)+(firstMsg.length>40?'...':'');
-        document.getElementById('chat-title').textContent = conversations[currentConvId].title;
+    if(currentConvId&&conversations[currentConvId]){
+      const historyToSave=currentHistory.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.find(c=>c.type==='text')?.text||'[Gambar]':m.content}));
+      conversations[currentConvId].history=historyToSave;
+      conversations[currentConvId].updated_at=Date.now();
+      if(conversations[currentConvId].title==='Percakapan Baru'&&historyToSave.length>=2){
+        const firstMsg=historyToSave[0].content||'';
+        conversations[currentConvId].title=firstMsg.slice(0,40)+(firstMsg.length>40?'...':'');
+        document.getElementById('chat-title').textContent=conversations[currentConvId].title;
       }
-      saveConversations();
+      dbSaveConversation(conversations[currentConvId]);
       renderConvList();
     }
   }catch{lb.className='bubble ai';lb.textContent='Koneksi bermasalah. Coba lagi!';}
-  sendBtn.disabled=false;
-  inpEl.focus();
+  sendBtn.disabled=false;inpEl.focus();
   msgsEl.scrollTop=msgsEl.scrollHeight;
 }
 
-// Init
 checkDiscordCallback();
 </script>
 </body>
