@@ -1,18 +1,21 @@
 export default async function handler(req, res) {
-  const { code, error } = req.query;
+  const code = req.query?.code;
+  const error = req.query?.error;
+
+  const CHATBOT_URL = process.env.CHATBOT_URL || 'https://moonbackai.vercel.app';
 
   if (error || !code) {
-    return res.redirect('/?error=auth_failed');
+    return res.redirect(`${CHATBOT_URL}/?error=auth_failed`);
   }
 
   const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
   const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
   const GUILD_ID = process.env.DISCORD_GUILD_ID;
-  const REDIRECT_URI = `${process.env.CHATBOT_URL}/api/auth-callback`;
+  const REDIRECT_URI = `${CHATBOT_URL}/api/auth-callback`;
   const PREMIUM_ROLE_ID = process.env.PREMIUM_ROLE_ID;
   const PREMIUM_PLUS_ROLE_ID = process.env.PREMIUM_PLUS_ROLE_ID;
   const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
-  const ADMIN_USERNAME = process.env.ADMIN_DISCORD_USERNAME || 'mrccho_';
+  const ADMIN_USERNAME = process.env.ADMIN_DISCORD_USERNAME || 'mrcho6_22264';
 
   try {
     // Exchange code for token
@@ -23,14 +26,19 @@ export default async function handler(req, res) {
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
         grant_type: 'authorization_code',
-        code,
+        code: code,
         redirect_uri: REDIRECT_URI
-      })
+      }).toString()
     });
+
+    if (!tokenRes.ok) {
+      console.error('Token exchange failed:', await tokenRes.text());
+      return res.redirect(`${CHATBOT_URL}/?error=token_failed`);
+    }
 
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) {
-      return res.redirect('/?error=token_failed');
+      return res.redirect(`${CHATBOT_URL}/?error=no_token`);
     }
 
     // Get user info
@@ -39,40 +47,53 @@ export default async function handler(req, res) {
     });
     const user = await userRes.json();
 
-    // Get member info in guild
-    const memberRes = await fetch(
-      `https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`,
-      { headers: { Authorization: `Bearer ${tokenData.access_token}` } }
-    );
-    const member = await memberRes.json();
+    if (!user.id) {
+      return res.redirect(`${CHATBOT_URL}/?error=no_user`);
+    }
+
+    // Get member roles in guild
+    let memberRoles = [];
+    let joinedGuild = false;
+    try {
+      const memberRes = await fetch(
+        `https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`,
+        { headers: { Authorization: `Bearer ${tokenData.access_token}` } }
+      );
+      if (memberRes.ok) {
+        const member = await memberRes.json();
+        memberRoles = member.roles || [];
+        joinedGuild = !!member.joined_at;
+      }
+    } catch(e) {
+      console.log('Could not fetch member roles:', e);
+    }
 
     // Determine tier
     let tier = 'free';
     const username = user.username || '';
 
-    if (username === ADMIN_USERNAME || (member.roles && member.roles.includes(ADMIN_ROLE_ID))) {
+    if (username === ADMIN_USERNAME || memberRoles.includes(ADMIN_ROLE_ID)) {
       tier = 'admin';
-    } else if (member.roles && member.roles.includes(PREMIUM_PLUS_ROLE_ID)) {
+    } else if (memberRoles.includes(PREMIUM_PLUS_ROLE_ID)) {
       tier = 'premiumplus';
-    } else if (member.roles && member.roles.includes(PREMIUM_ROLE_ID)) {
+    } else if (memberRoles.includes(PREMIUM_ROLE_ID)) {
       tier = 'premium';
-    } else if (member.joined_at) {
-      tier = 'classic'; // joined server but no paid role
+    } else if (joinedGuild) {
+      tier = 'classic';
     }
 
-    // Encode user data
+    // Encode and redirect
     const userData = Buffer.from(JSON.stringify({
       id: user.id,
       username: user.username,
-      discriminator: user.discriminator,
       avatar: user.avatar,
       tier
     })).toString('base64');
 
-    return res.redirect(`/?discord=${encodeURIComponent(userData)}`);
+    return res.redirect(`${CHATBOT_URL}/?discord=${encodeURIComponent(userData)}`);
 
   } catch (err) {
-    console.error('Auth error:', err);
-    return res.redirect('/?error=server_error');
+    console.error('Auth callback error:', err);
+    return res.redirect(`${CHATBOT_URL}/?error=server_error`);
   }
 }
