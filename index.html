@@ -573,19 +573,56 @@ function renderConvList(){
 
 // ===== AUTH =====
 function checkDiscordCallback(){
-  const params=new URLSearchParams(window.location.search);
-  const discordData=params.get('discord');
-  if(discordData){
-    try{
-      const user=JSON.parse(atob(decodeURIComponent(discordData)));
-      currentUser=user;
-      localStorage.setItem(USER_KEY,JSON.stringify(user));
-      window.history.replaceState({},'','/');
-      showApp();return;
-    }catch(e){}
+  try{
+    const params=new URLSearchParams(window.location.search);
+    const discordData=params.get('discord');
+    const errorParam=params.get('error');
+
+    if(errorParam){
+      console.error('Auth error:',errorParam);
+      showLanding();return;
+    }
+
+    if(discordData){
+      try{
+        // Try multiple decode methods
+        let user=null;
+        try{
+          user=JSON.parse(atob(discordData));
+        }catch(e1){
+          try{
+            user=JSON.parse(atob(decodeURIComponent(discordData)));
+          }catch(e2){
+            const fixed=discordData.replace(/ /g,'+');
+            user=JSON.parse(atob(fixed));
+          }
+        }
+        if(user&&user.id){
+          currentUser=user;
+          localStorage.setItem(USER_KEY,JSON.stringify(user));
+          window.history.replaceState({},'','/');
+          showApp();return;
+        }
+      }catch(e){
+        console.error('Failed to parse discord data:',e,discordData.slice(0,50));
+      }
+    }
+  }catch(e){
+    console.error('checkDiscordCallback error:',e);
   }
-  const saved=localStorage.getItem(USER_KEY);
-  if(saved){try{currentUser=JSON.parse(saved);showApp();return;}catch(e){}}
+
+  // Try saved user
+  try{
+    const saved=localStorage.getItem(USER_KEY);
+    if(saved){
+      const user=JSON.parse(saved);
+      if(user&&user.id){
+        currentUser=user;
+        showApp();return;
+      }
+    }
+  }catch(e){}
+
   showLanding();
 }
 
@@ -782,8 +819,7 @@ async function sendMsg(){
     const d=await r.json();
     const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
     lb.className='bubble ai';
-    lb.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/
-/g,'<br>');
+    lb.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
     currentHistory.push({role:'assistant',content:reply});
     if(currentConvId&&conversations[currentConvId]){
       const historyToSave=currentHistory.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.find(c=>c.type==='text')?.text||'[Gambar]':m.content}));
