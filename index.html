@@ -219,6 +219,13 @@
           <button onclick="removeImage()" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#ef4444;border:none;color:#fff;cursor:pointer;font-size:10px">✕</button>
         </div>
       </div>
+      <div id="cooldown-bar" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:#1a1508;border:1px solid #c9a84c22;border-radius:12px;margin-bottom:10px">
+        <span style="font-size:18px;flex-shrink:0">🌙</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;color:#555;margin-bottom:2px">AI sedang istirahat. Bisa digunakan lagi dalam</div>
+          <div id="cooldown-txt" style="font-size:14px;font-weight:600;color:#c9a84c"></div>
+        </div>
+      </div>
       <div id="input-box">
         <div id="inp-row">
           <textarea id="inp" placeholder="Tanya soal crypto, saham, emas, atau upload chart..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -253,7 +260,7 @@
 <script>
 let currentUser=null,pendingImage=null,currentConvId=null,currentHistory=[];
 const DISCORD='https://discord.gg/xMtR4zagJ';
-const FREE_LIMIT=10,SESSION_MS=5*60*60*1000,COOLDOWN_MS=1.5*60*60*1000;
+const FREE_FIRST_LIMIT=10,FREE_REPEAT_LIMIT=4,FREE_COOLDOWN_MS=2*60*60*1000,SESSION_MS=5*60*60*1000,COOLDOWN_MS=1.5*60*60*1000;
 const USER_KEY='moonback_user_v2',SESSION_KEY='moonback_session';
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -268,20 +275,96 @@ function saveUsage(d){try{localStorage.setItem('moonback_usage',JSON.stringify(d
 
 // Session tracking
 function getSessionData(){
-  try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{"sessionStart":0,"inCooldown":false,"cooldownStart":0}');}
-  catch{return{sessionStart:0,inCooldown:false,cooldownStart:0};}
+  try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{"count":0,"cooldownStart":0,"sessionStart":0}');}
+  catch{return{count:0,cooldownStart:0,sessionStart:0};}
 }
 function saveSessionData(d){try{localStorage.setItem(SESSION_KEY,JSON.stringify(d));}catch{}}
+
 function canAsk(){
-  const now=Date.now(),s=getSessionData();
-  if(s.inCooldown){
-    const end=s.cooldownStart+COOLDOWN_MS;
-    if(now<end){const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`};}
-    saveSessionData({sessionStart:now,inCooldown:false,cooldownStart:0});return{can:true};
+  const now=Date.now();
+  const tier=currentUser?.tier||'free';
+  const s=getSessionData();
+  if(tier==='admin')return{can:true};
+
+  // Premium/Premium+: sesi 5 jam, cooldown 1.5 jam
+  if(tier==='premium'||tier==='premiumplus'){
+    if(s.cooldownStart>0){
+      const end=s.cooldownStart+COOLDOWN_MS;
+      if(now<end){const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`,cooldownEnd:end};}
+      saveSessionData({count:0,cooldownStart:0,sessionStart:now,isFirstSession:false});return{can:true};
+    }
+    if(s.sessionStart===0){saveSessionData({count:0,cooldownStart:0,sessionStart:now,isFirstSession:false});return{can:true};}
+    if(now>=s.sessionStart+SESSION_MS){
+      const end=now+COOLDOWN_MS;
+      saveSessionData({count:0,cooldownStart:now,sessionStart:s.sessionStart,isFirstSession:false});
+      const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;
+      return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`,cooldownEnd:end};
+    }
+    return{can:true};
   }
-  if(s.sessionStart===0){saveSessionData({sessionStart:now,inCooldown:false,cooldownStart:0});return{can:true};}
-  if(now>=s.sessionStart+SESSION_MS){saveSessionData({sessionStart:s.sessionStart,inCooldown:true,cooldownStart:now});return{can:false,time:'1 jam 30 menit'};}
+
+  // Free/Classic:
+  // Sesi pertama: 10 pertanyaan
+  // Sesi berikutnya: 4 pertanyaan per sesi, cooldown 2 jam
+  const isFirstSession = s.isFirstSession !== false; // default true
+  const currentLimit = isFirstSession ? FREE_FIRST_LIMIT : FREE_REPEAT_LIMIT;
+
+  // Sedang cooldown
+  if(s.cooldownStart>0){
+    const end=s.cooldownStart+FREE_COOLDOWN_MS;
+    if(now<end){const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`,cooldownEnd:end};}
+    // Cooldown selesai - mulai sesi baru (bukan first session lagi)
+    saveSessionData({count:0,cooldownStart:0,sessionStart:now,isFirstSession:false});return{can:true};
+  }
+
+  // Cek apakah limit tercapai
+  if((s.count||0)>=currentLimit){
+    const end=now+FREE_COOLDOWN_MS;
+    saveSessionData({count:s.count,cooldownStart:now,sessionStart:s.sessionStart,isFirstSession:false});
+    const mins=Math.ceil((end-now)/60000),h=Math.floor(mins/60),m=mins%60;
+    return{can:false,time:h>0?`${h} jam ${m} menit`:`${m} menit`,cooldownEnd:end};
+  }
   return{can:true};
+}
+
+function incrementSession(){
+  const s=getSessionData();
+  s.count=(s.count||0)+1;
+  if(!s.sessionStart)s.sessionStart=Date.now();
+  if(s.isFirstSession===undefined)s.isFirstSession=true;
+  saveSessionData(s);
+}
+
+let countdownInterval=null;
+function startCountdown(cooldownEnd){
+  clearInterval(countdownInterval);
+  const bar=document.getElementById('cooldown-bar');
+  const txt=document.getElementById('cooldown-txt');
+  if(!bar||!txt)return;
+  bar.style.display='flex';
+  document.getElementById('inp').disabled=true;
+  document.getElementById('send-btn').disabled=true;
+  function update(){
+    const rem=cooldownEnd-Date.now();
+    if(rem<=0){
+      clearInterval(countdownInterval);
+      bar.style.display='none';
+      document.getElementById('inp').disabled=false;
+      document.getElementById('send-btn').disabled=false;
+      return;
+    }
+    const mins=Math.ceil(rem/60000),h=Math.floor(mins/60),m=mins%60;
+    txt.textContent=h>0?`${h} jam ${m} menit lagi`:`${m} menit lagi`;
+  }
+  update();
+  countdownInterval=setInterval(update,10000);
+}
+function stopCountdown(){
+  clearInterval(countdownInterval);
+  const bar=document.getElementById('cooldown-bar');
+  if(bar)bar.style.display='none';
+  document.getElementById('inp').disabled=false;
+  document.getElementById('send-btn').disabled=false;
 }
 
 // ===== DATABASE =====
@@ -580,13 +663,15 @@ async function sendMsg(){
   const t=inpEl.value.trim(),hasImage=pendingImage!==null;
   if(!t&&!hasImage)return;
   const tier=currentUser?.tier||'free';
-  if(tier==='free'||tier==='classic'){
-    const usage=getUsage();
-    if(usage.count>=FREE_LIMIT){addMsg('ai','','','free');inpEl.value='';return;}
-    usage.count+=1;saveUsage(usage);
-  }else if(tier!=='admin'){
+  if(tier!=='admin'){
     const check=canAsk();
-    if(!check.can){addMsg('ai',`Sesi kamu sedang istirahat, lanjut dalam <strong>${check.time}</strong> ya. 🌙<br><br>Sambil nunggu, diskusi di <a href="${DISCORD}" target="_blank" style="color:#c9a84c">Discord komunitas</a>!`,'','cooldown');inpEl.value='';return;}
+    if(!check.can){
+      inpEl.value='';
+      startCountdown(check.cooldownEnd);
+      return;
+    }
+    incrementSession();
+    stopCountdown();
   }
   const userText=t||'Tolong analisis gambar ini';
   inpEl.value='';inpEl.style.height='auto';sendBtn.disabled=true;
