@@ -1,4 +1,4 @@
-async function fetchWithTimeout(url, timeout = 4000) {
+async function fetchWithTimeout(url, timeout = 5000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
@@ -11,10 +11,31 @@ async function fetchWithTimeout(url, timeout = 4000) {
   }
 }
 
+async function getStockPrice(symbol) {
+  try {
+    // Yahoo Finance API - no key needed
+    const r = await fetchWithTimeout(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`
+    );
+    if (!r || !r.ok) return null;
+    const d = await r.json();
+    const meta = d?.chart?.result?.[0]?.meta;
+    if (!meta) return null;
+    return {
+      symbol: meta.symbol,
+      price: meta.regularMarketPrice,
+      currency: meta.currency,
+      change: meta.regularMarketChangePercent?.toFixed(2),
+      name: meta.shortName || meta.symbol
+    };
+  } catch(e) { return null; }
+}
+
 async function getMarketData(userMessage) {
   const msg = userMessage.toLowerCase();
   let marketContext = '';
 
+  // ===== CRYPTO =====
   const cryptoMap = {
     'bitcoin':'bitcoin','btc':'bitcoin','ethereum':'ethereum','eth':'ethereum',
     'bnb':'binancecoin','solana':'solana','sol':'solana','xrp':'ripple',
@@ -44,12 +65,13 @@ async function getMarketData(userMessage) {
           const change = coin.usd_24h_change?.toFixed(2);
           const emoji = change > 0 ? '📈' : '📉';
           const mcap = coin.usd_market_cap ? `$${(coin.usd_market_cap/1e9).toFixed(1)}B` : 'N/A';
-          marketContext += `\n[REAL-TIME] ${detectedCoin.key.toUpperCase()}: $${coin.usd?.toLocaleString()} | Rp ${coin.idr?.toLocaleString()} | 24h: ${emoji}${change}% | MCap: ${mcap}`;
+          marketContext += `\n[CRYPTO REAL-TIME] ${detectedCoin.key.toUpperCase()}: $${coin.usd?.toLocaleString()} | Rp ${coin.idr?.toLocaleString()} | 24h: ${emoji}${change}% | MCap: ${mcap}`;
         }
       }
     } catch(e) {}
   }
 
+  // ===== EMAS =====
   if (msg.includes('emas') || msg.includes('gold') || msg.includes('xau')) {
     try {
       const r = await fetchWithTimeout('https://api.frankfurter.app/latest?from=XAU&to=USD');
@@ -58,27 +80,108 @@ async function getMarketData(userMessage) {
         if (d.rates?.USD) {
           const usd = d.rates.USD;
           const perGram = Math.round((usd * 16200) / 31.1);
-          marketContext += `\n[REAL-TIME] Emas: $${usd.toLocaleString()}/troy oz | ≈ Rp ${perGram.toLocaleString()}/gram`;
+          marketContext += `\n[EMAS REAL-TIME] Emas: $${usd.toLocaleString()}/troy oz | ≈ Rp ${perGram.toLocaleString()}/gram`;
         }
       }
     } catch(e) {}
   }
 
+  // ===== FOREX =====
   const forexMap = {
-    'usd/idr':['USD','IDR'],'dolar':['USD','IDR'],'euro':['EUR','IDR'],
-    'eur/usd':['EUR','USD'],'pound':['GBP','IDR'],'gbp':['GBP','USD'],
+    'dolar':['USD','IDR'],'usd':['USD','IDR'],'euro':['EUR','IDR'],
+    'eur':['EUR','USD'],'pound':['GBP','IDR'],'gbp':['GBP','USD'],
     'yen':['JPY','IDR'],'sgd':['SGD','IDR']
   };
-
   for (const [key, [from, to]] of Object.entries(forexMap)) {
-    if (msg.includes(key) && (msg.includes('kurs')||msg.includes('rate')||msg.includes('harga')||msg.includes('nilai'))) {
+    if (msg.includes(key) && (msg.includes('kurs')||msg.includes('rate')||msg.includes('harga')||msg.includes('berapa')||msg.includes('nilai'))) {
       try {
         const r = await fetchWithTimeout(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
         if (r && r.ok) {
           const d = await r.json();
-          if (d.rates?.[to]) marketContext += `\n[REAL-TIME] Kurs ${from}/${to}: ${d.rates[to].toLocaleString()}`;
+          if (d.rates?.[to]) marketContext += `\n[FOREX REAL-TIME] Kurs ${from}/${to}: ${d.rates[to].toLocaleString()}`;
         }
       } catch(e) {}
+      break;
+    }
+  }
+
+  // ===== SAHAM IDX =====
+  const idxStocks = {
+    'bbca': 'BBCA.JK', 'bca': 'BBCA.JK',
+    'bbri': 'BBRI.JK', 'bri': 'BBRI.JK',
+    'bmri': 'BMRI.JK', 'mandiri': 'BMRI.JK',
+    'bbni': 'BBNI.JK', 'bni': 'BBNI.JK',
+    'tlkm': 'TLKM.JK', 'telkom': 'TLKM.JK',
+    'asii': 'ASII.JK', 'astra': 'ASII.JK',
+    'goto': 'GOTO.JK', 'gojek': 'GOTO.JK',
+    'antm': 'ANTM.JK', 'antam': 'ANTM.JK',
+    'unvr': 'UNVR.JK', 'unilever': 'UNVR.JK',
+    'klbf': 'KLBF.JK', 'kalbe': 'KLBF.JK',
+    'bsde': 'BSDE.JK', 'icbp': 'ICBP.JK',
+    'indf': 'INDF.JK', 'indofood': 'INDF.JK',
+    'pgas': 'PGAS.JK', 'smgr': 'SMGR.JK',
+    'adro': 'ADRO.JK', 'adaro': 'ADRO.JK',
+    'ptba': 'PTBA.JK', 'hrum': 'HRUM.JK',
+    'inkp': 'INKP.JK', 'tpia': 'TPIA.JK',
+    'emtk': 'EMTK.JK', 'sido': 'SIDO.JK'
+  };
+
+  for (const [key, ticker] of Object.entries(idxStocks)) {
+    if (msg.includes(key)) {
+      const stock = await getStockPrice(ticker);
+      if (stock) {
+        const emoji = parseFloat(stock.change) >= 0 ? '📈' : '📉';
+        marketContext += `\n[SAHAM IDX REAL-TIME] ${stock.name} (${stock.symbol}): Rp ${stock.price?.toLocaleString()} | ${emoji}${stock.change}%`;
+      }
+      break;
+    }
+  }
+
+  // ===== SAHAM US =====
+  const usStocks = {
+    'apple': 'AAPL', 'aapl': 'AAPL',
+    'microsoft': 'MSFT', 'msft': 'MSFT',
+    'google': 'GOOGL', 'alphabet': 'GOOGL', 'googl': 'GOOGL',
+    'amazon': 'AMZN', 'amzn': 'AMZN',
+    'meta': 'META', 'facebook': 'META',
+    'nvidia': 'NVDA', 'nvda': 'NVDA',
+    'tesla': 'TSLA', 'tsla': 'TSLA',
+    'netflix': 'NFLX', 'nflx': 'NFLX',
+    'spacex': 'SPCX', 'spcx': 'SPCX',
+    'openai': 'OPAI', 'berkshire': 'BRK-B',
+    'jpmorgan': 'JPM', 'jpm': 'JPM',
+    'coca cola': 'KO', 'ko': 'KO',
+    'disney': 'DIS', 'dis': 'DIS',
+    'intel': 'INTC', 'intc': 'INTC',
+    'amd': 'AMD', 'qualcomm': 'QCOM'
+  };
+
+  for (const [key, ticker] of Object.entries(usStocks)) {
+    if (msg.includes(key)) {
+      const stock = await getStockPrice(ticker);
+      if (stock) {
+        const emoji = parseFloat(stock.change) >= 0 ? '📈' : '📉';
+        marketContext += `\n[SAHAM US REAL-TIME] ${stock.name} (${stock.symbol}): $${stock.price?.toLocaleString()} | ${emoji}${stock.change}%`;
+      }
+      break;
+    }
+  }
+
+  // ===== INDEKS PASAR =====
+  const indices = {
+    'ihsg': '^JKSE', 'idx composite': '^JKSE',
+    's&p 500': '^GSPC', 'sp500': '^GSPC', 's&p': '^GSPC',
+    'nasdaq': '^IXIC', 'dow jones': '^DJI', 'dow': '^DJI',
+    'nikkei': '^N225', 'hang seng': '^HSI', 'ftse': '^FTSE'
+  };
+
+  for (const [key, ticker] of Object.entries(indices)) {
+    if (msg.includes(key)) {
+      const idx = await getStockPrice(ticker);
+      if (idx) {
+        const emoji = parseFloat(idx.change) >= 0 ? '📈' : '📉';
+        marketContext += `\n[INDEKS REAL-TIME] ${key.toUpperCase()}: ${idx.price?.toLocaleString()} | ${emoji}${idx.change}%`;
+      }
       break;
     }
   }
@@ -89,7 +192,7 @@ async function getMarketData(userMessage) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { messages, isMember, tier } = req.body;
+  const { messages, tier } = req.body;
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'Invalid messages' });
 
   try {
@@ -99,54 +202,50 @@ export default async function handler(req, res) {
       : lastMessage?.content || '';
 
     const marketData = await getMarketData(lastText);
-    const marketContext = marketData ? `\nDATA REAL-TIME:\n${marketData}` : '';
+    const marketContext = marketData
+      ? `\n\nDATA PASAR REAL-TIME (WAJIB DIGUNAKAN, JANGAN MENGARANG HARGA):\n${marketData}`
+      : '';
 
-    let systemPrompt = '';
+    const today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
 
-    if (tier === 'premiumplus') {
-      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market premium terbaik Indonesia.
+    const systemPrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia paling komprehensif.
 
-Kamu melayani PREMIUM+ MEMBER — level tertinggi. Berikan yang terbaik:
-- Analisis sangat mendalam dan komprehensif
-- Untuk chart: full technical analysis — trend, support/resistance, pattern, indikator, volume, proyeksi
-- Untuk harga: konteks makro global, sentimen institusional, on-chain data jika relevan, outlook konkret
-- Berikan setup trading spesifik bila relevan — entry, SL, TP, risk/reward
-- Gunakan bahasa expert yang tetap mudah dipahami
-- Personal dan engaging — seperti mentor senior yang benar-benar peduli
-- Boleh lebih panjang dan detail dari biasanya
+Hari ini: ${today}
+
+KEAHLIAN KAMU — SEJARAH EKONOMI LENGKAP:
+- Sistem barter awal peradaban manusia (sebelum 3000 SM)
+- Lahirnya uang: koin elektrum Lydia ~600 SM, uang kertas China ~700 M
+- Perdagangan kuno: Mesopotamia, Jalur Sutra, rempah-rempah Nusantara
+- Merkantilisme Eropa abad 16-18, Revolusi Industri, lahirnya kapitalisme
+- Standar Emas, sistem Bretton Woods 1944, Nixon Shock 1971
+- Semua krisis ekonomi: Tulip Mania 1637, South Sea Bubble 1720, Panic of 1873/1893/1907
+- Great Depression 1929, Marshall Plan, kebangkitan Jepang pasca WW2
+- Krisis minyak 1973, Black Monday 1987, Jepang Lost Decade 1990an
+- Asian Financial Crisis 1997 (krisis rupiah Indonesia secara mendalam)
+- Dot-com bubble 2000, Global Financial Crisis 2008, European Debt Crisis
+- COVID crash 2020, crypto bull run 2021, bear market 2022
+- Semua event sampai pertengahan 2025
+
+PASAR KEUANGAN:
+- Saham IDX (BEI), NYSE, NASDAQ, bursa dunia lainnya
+- Analisis teknikal dan fundamental lengkap
+- IPO, rights issue, dividen, corporate action
+- ETF, reksa dana, obligasi, SBN Indonesia
+- Crypto, DeFi, NFT, blockchain
+- Forex, komoditas, emas, minyak
+- Kebijakan bank sentral (Fed, BI, ECB)
+- Makroekonomi global dan Indonesia
 ${marketContext}
 
-Ingatkan ini edukasi bukan saran investasi — secara natural, tidak kaku.
-Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange terbaik untuk pemula.`;
+CARA MENJAWAB:
+- Natural dan engaging seperti mentor expert
+- Gunakan data real-time di atas jika tersedia — WAJIB, jangan mengarang harga
+- Untuk event setelah Juli 2025: sampaikan jujur kamu tidak punya info terkini, sarankan cek Bloomberg/Reuters/IDX/Stockbit
+- Untuk harga saham yang tidak ada datanya: arahkan ke Stockbit, RTI, Yahoo Finance
+- Jangan pernah mengarang fakta atau harga
 
-    } else if (tier === 'premium' || isMember) {
-      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia yang expert dan helpful.
-
-Kamu melayani PREMIUM MEMBER. Berikan jawaban yang:
-- Mendalam dan informatif — 3-4 paragraf
-- Untuk chart: analisis teknikal solid — trend, support/resistance, indikator utama
-- Untuk harga: konteks market, sentimen, level penting, outlook singkat
-- Bahasa natural dan engaging seperti teman yang expert
-- Berikan insight yang actionable
-${marketContext}
-
-Ingatkan ini edukasi bukan saran investasi.
-Rekomendasikan Pintu hanya jika ditanya exchange terbaik untuk pemula.`;
-
-    } else {
-      systemPrompt = `Kamu adalah Moon Back AI — asisten financial market Indonesia.
-
-Kamu melayani FREE USER. Berikan jawaban yang:
-- Informatif tapi SINGKAT — maksimal 2 paragraf pendek
-- Cukup untuk membuat penasaran, tapi tidak terlalu lengkap
-- Untuk chart: sebut 1-2 hal yang terlihat, tidak detail
-- Untuk harga: sebutkan harga dan pergerakan, tanpa analisis mendalam
-- Di akhir, hint natural bahwa ada analisis lebih dalam untuk member
-- Jangan sebut "kamu user gratis" secara kasar
-${marketContext}
-
-Ingatkan ini edukasi bukan saran investasi.`;
-    }
+Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange crypto terbaik untuk pemula.
+Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -156,8 +255,8 @@ Ingatkan ini edukasi bukan saran investasi.`;
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: tier === 'premiumplus' ? 1500 : tier === 'premium' ? 1024 : 512,
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
         system: systemPrompt,
         messages
       })
