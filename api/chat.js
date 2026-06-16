@@ -258,13 +258,26 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
         model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         system: systemPrompt,
-        messages
+        messages,
+        tools: [{
+          type: 'web_search_20250305',
+          name: 'web_search',
+          max_uses: 3
+        }]
       })
     });
 
     if (!response.ok) throw new Error(`API error: ${response.status}`);
     const data = await response.json();
-    const reply = data.content?.[0]?.text || 'Aduh, lagi ada gangguan. Coba lagi ya!';
+    
+    // Extract text from all content blocks (web search returns multiple blocks)
+    let reply = '';
+    if (data.content && Array.isArray(data.content)) {
+      for (const block of data.content) {
+        if (block.type === 'text') reply += block.text;
+      }
+    }
+    if (!reply) reply = 'Aduh, lagi ada gangguan. Coba lagi ya!';
     return res.status(200).json({ reply });
 
   } catch (error) {
