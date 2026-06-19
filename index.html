@@ -815,7 +815,22 @@ async function sendMsg(){
       {status:'active',text:'🧠 Menyusun jawaban...'},
     ]);
 
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier})});
+    const controller=new AbortController();
+    const timeoutId=setTimeout(()=>controller.abort(),30000);
+    let r;
+    try{
+      r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier}),signal:controller.signal});
+      clearTimeout(timeoutId);
+    }catch(fetchErr){
+      clearTimeout(timeoutId);
+      if(fetchErr.name==='AbortError'){
+        lb.className='bubble ai';
+        lb.textContent='Waduh, agak lama nih. Coba tanya ulang dengan pertanyaan yang lebih singkat ya!';
+        sendBtn.disabled=false;inpEl.focus();
+        return;
+      }
+      throw fetchErr;
+    }
     const d=await r.json();
     const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
     lb.className='bubble ai';
