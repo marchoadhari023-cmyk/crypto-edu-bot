@@ -247,25 +247,39 @@ CARA MENJAWAB:
 Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange crypto terbaik untuk pemula.
 Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4096,
-        system: systemPrompt,
-        messages,
-        tools: [{
-          type: 'web_search_20250305',
-          name: 'web_search',
-          max_uses: 3
-        }]
-      })
-    });
+    const controller = new AbortController();
+    const apiTimeout = setTimeout(() => controller.abort(), 25000);
+
+    let response;
+    try {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 4096,
+          system: systemPrompt,
+          messages,
+          tools: [{
+            type: 'web_search_20250305',
+            name: 'web_search',
+            max_uses: 3
+          }]
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(apiTimeout);
+    } catch (fetchErr) {
+      clearTimeout(apiTimeout);
+      if (fetchErr.name === 'AbortError') {
+        return res.status(200).json({ reply: 'Maaf, butuh waktu lebih lama dari biasanya untuk jawab ini. Coba tanya ulang dengan kalimat yang lebih sederhana ya!' });
+      }
+      throw fetchErr;
+    }
 
     if (!response.ok) throw new Error(`API error: ${response.status}`);
     const data = await response.json();
