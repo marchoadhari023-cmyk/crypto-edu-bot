@@ -260,7 +260,8 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
       model: 'claude-sonnet-4-5',
       max_tokens: 1024,
       system: systemPrompt,
-      messages
+      messages,
+      stream: true
     };
 
     if (needsWebSearch) {
@@ -272,7 +273,7 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
     }
 
     const controller = new AbortController();
-    const apiTimeout = setTimeout(() => controller.abort(), 35000);
+    const apiTimeout = setTimeout(() => controller.abort(), 45000);
 
     let response;
     try {
@@ -286,30 +287,65 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
         body: JSON.stringify(requestBody),
         signal: controller.signal
       });
-      clearTimeout(apiTimeout);
     } catch (fetchErr) {
       clearTimeout(apiTimeout);
       if (fetchErr.name === 'AbortError') {
-        return res.status(200).json({ reply: 'Maaf, butuh waktu lebih lama dari biasanya untuk jawab ini. Coba tanya ulang dengan kalimat yang lebih sederhana ya!' });
+        res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+        res.write(`data: ${JSON.stringify({ text: 'Maaf, butuh waktu lebih lama dari biasanya. Coba tanya ulang ya!' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        return res.end();
       }
       throw fetchErr;
     }
 
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
-    const data = await response.json();
-    
-    // Extract text from all content blocks (web search returns multiple blocks)
-    let reply = '';
-    if (data.content && Array.isArray(data.content)) {
-      for (const block of data.content) {
-        if (block.type === 'text') reply += block.text;
+    if (!response.ok) {
+      clearTimeout(apiTimeout);
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    // Set up SSE response to client
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive'
+    });
+
+    const reader = response.body;
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    for await (const chunk of reader) {
+      clearTimeout(apiTimeout);
+      buffer += decoder.decode(chunk, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const dataStr = line.slice(6).trim();
+        if (!dataStr || dataStr === '[DONE]') continue;
+
+        try {
+          const evt = JSON.parse(dataStr);
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            res.write(`data: ${JSON.stringify({ text: evt.delta.text })}\n\n`);
+          }
+        } catch (e) { /* skip malformed chunks */ }
       }
     }
-    if (!reply) reply = 'Aduh, lagi ada gangguan. Coba lagi ya!';
-    return res.status(200).json({ reply });
+
+    res.write('data: [DONE]\n\n');
+    return res.end();
 
   } catch (error) {
     console.error('Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    try {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.write(`data: ${JSON.stringify({ text: 'Aduh, lagi ada gangguan. Coba lagi ya!' })}\n\n`);
+      res.write('data: [DONE]\n\n');
+      return res.end();
+    } catch(e) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
 }
