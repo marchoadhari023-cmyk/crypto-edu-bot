@@ -13,7 +13,6 @@ async function fetchWithTimeout(url, timeout = 5000) {
 
 async function getStockPrice(symbol) {
   try {
-    // Yahoo Finance API - no key needed
     const r = await fetchWithTimeout(
       `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`
     );
@@ -35,7 +34,6 @@ async function getMarketData(userMessage) {
   const msg = userMessage.toLowerCase();
   let marketContext = '';
 
-  // ===== CRYPTO =====
   const cryptoMap = {
     'bitcoin':'bitcoin','btc':'bitcoin','ethereum':'ethereum','eth':'ethereum',
     'bnb':'binancecoin','solana':'solana','sol':'solana','xrp':'ripple',
@@ -47,7 +45,7 @@ async function getMarketData(userMessage) {
     'near':'near','fantom':'fantom','ftm':'fantom','arbitrum':'arbitrum',
     'arb':'arbitrum','optimism':'optimism','sui':'sui','aptos':'aptos','apt':'aptos',
     'pepe':'pepe','shiba':'shiba-inu','shib':'shiba-inu',
-    'ton':'the-open-network','tron':'tron','trx':'tron'
+    'ton':'the-open-network','tron':'tron','trx':'tron','hyperliquid':'hyperliquid','hype':'hyperliquid'
   };
 
   let detectedCoin = null;
@@ -71,7 +69,6 @@ async function getMarketData(userMessage) {
     } catch(e) {}
   }
 
-  // ===== EMAS =====
   if (msg.includes('emas') || msg.includes('gold') || msg.includes('xau')) {
     try {
       const r = await fetchWithTimeout('https://api.frankfurter.app/latest?from=XAU&to=USD');
@@ -86,7 +83,6 @@ async function getMarketData(userMessage) {
     } catch(e) {}
   }
 
-  // ===== FOREX =====
   const forexMap = {
     'dolar':['USD','IDR'],'usd':['USD','IDR'],'euro':['EUR','IDR'],
     'eur':['EUR','USD'],'pound':['GBP','IDR'],'gbp':['GBP','USD'],
@@ -105,25 +101,16 @@ async function getMarketData(userMessage) {
     }
   }
 
-  // ===== SAHAM IDX =====
   const idxStocks = {
-    'bbca': 'BBCA.JK', 'bca': 'BBCA.JK',
-    'bbri': 'BBRI.JK', 'bri': 'BBRI.JK',
-    'bmri': 'BMRI.JK', 'mandiri': 'BMRI.JK',
-    'bbni': 'BBNI.JK', 'bni': 'BBNI.JK',
-    'tlkm': 'TLKM.JK', 'telkom': 'TLKM.JK',
-    'asii': 'ASII.JK', 'astra': 'ASII.JK',
-    'goto': 'GOTO.JK', 'gojek': 'GOTO.JK',
-    'antm': 'ANTM.JK', 'antam': 'ANTM.JK',
-    'unvr': 'UNVR.JK', 'unilever': 'UNVR.JK',
-    'klbf': 'KLBF.JK', 'kalbe': 'KLBF.JK',
-    'bsde': 'BSDE.JK', 'icbp': 'ICBP.JK',
-    'indf': 'INDF.JK', 'indofood': 'INDF.JK',
-    'pgas': 'PGAS.JK', 'smgr': 'SMGR.JK',
-    'adro': 'ADRO.JK', 'adaro': 'ADRO.JK',
-    'ptba': 'PTBA.JK', 'hrum': 'HRUM.JK',
-    'inkp': 'INKP.JK', 'tpia': 'TPIA.JK',
-    'emtk': 'EMTK.JK', 'sido': 'SIDO.JK'
+    'bbca':'BBCA.JK','bca':'BBCA.JK','bbri':'BBRI.JK','bri':'BBRI.JK',
+    'bmri':'BMRI.JK','mandiri':'BMRI.JK','bbni':'BBNI.JK','bni':'BBNI.JK',
+    'tlkm':'TLKM.JK','telkom':'TLKM.JK','asii':'ASII.JK','astra':'ASII.JK',
+    'goto':'GOTO.JK','gojek':'GOTO.JK','antm':'ANTM.JK','antam':'ANTM.JK',
+    'unvr':'UNVR.JK','unilever':'UNVR.JK','klbf':'KLBF.JK','kalbe':'KLBF.JK',
+    'bsde':'BSDE.JK','icbp':'ICBP.JK','indf':'INDF.JK','indofood':'INDF.JK',
+    'pgas':'PGAS.JK','smgr':'SMGR.JK','adro':'ADRO.JK','adaro':'ADRO.JK',
+    'ptba':'PTBA.JK','hrum':'HRUM.JK','inkp':'INKP.JK','tpia':'TPIA.JK',
+    'emtk':'EMTK.JK','sido':'SIDO.JK'
   };
 
   for (const [key, ticker] of Object.entries(idxStocks)) {
@@ -137,23 +124,13 @@ async function getMarketData(userMessage) {
     }
   }
 
-  // ===== SAHAM US =====
   const usStocks = {
-    'apple': 'AAPL', 'aapl': 'AAPL',
-    'microsoft': 'MSFT', 'msft': 'MSFT',
-    'google': 'GOOGL', 'alphabet': 'GOOGL', 'googl': 'GOOGL',
-    'amazon': 'AMZN', 'amzn': 'AMZN',
-    'meta': 'META', 'facebook': 'META',
-    'nvidia': 'NVDA', 'nvda': 'NVDA',
-    'tesla': 'TSLA', 'tsla': 'TSLA',
-    'netflix': 'NFLX', 'nflx': 'NFLX',
-    'spacex': 'SPCX', 'spcx': 'SPCX',
-    'openai': 'OPAI', 'berkshire': 'BRK-B',
-    'jpmorgan': 'JPM', 'jpm': 'JPM',
-    'coca cola': 'KO', 'ko': 'KO',
-    'disney': 'DIS', 'dis': 'DIS',
-    'intel': 'INTC', 'intc': 'INTC',
-    'amd': 'AMD', 'qualcomm': 'QCOM'
+    'apple':'AAPL','aapl':'AAPL','microsoft':'MSFT','msft':'MSFT',
+    'google':'GOOGL','alphabet':'GOOGL','googl':'GOOGL','amazon':'AMZN','amzn':'AMZN',
+    'meta':'META','facebook':'META','nvidia':'NVDA','nvda':'NVDA',
+    'tesla':'TSLA','tsla':'TSLA','netflix':'NFLX','nflx':'NFLX',
+    'spacex':'SPCX','spcx':'SPCX','jpmorgan':'JPM','jpm':'JPM',
+    'disney':'DIS','dis':'DIS','intel':'INTC','intc':'INTC','amd':'AMD'
   };
 
   for (const [key, ticker] of Object.entries(usStocks)) {
@@ -167,12 +144,10 @@ async function getMarketData(userMessage) {
     }
   }
 
-  // ===== INDEKS PASAR =====
   const indices = {
-    'ihsg': '^JKSE', 'idx composite': '^JKSE',
-    's&p 500': '^GSPC', 'sp500': '^GSPC', 's&p': '^GSPC',
-    'nasdaq': '^IXIC', 'dow jones': '^DJI', 'dow': '^DJI',
-    'nikkei': '^N225', 'hang seng': '^HSI', 'ftse': '^FTSE'
+    'ihsg':'^JKSE','s&p 500':'^GSPC','sp500':'^GSPC',
+    'nasdaq':'^IXIC','dow jones':'^DJI','dow':'^DJI',
+    'nikkei':'^N225','hang seng':'^HSI','ftse':'^FTSE'
   };
 
   for (const [key, ticker] of Object.entries(indices)) {
@@ -212,140 +187,57 @@ export default async function handler(req, res) {
 
 Hari ini: ${today}
 
-PENTING SOAL WEB SEARCH:
-Kamu punya akses web search, TAPI gunakan HANYA jika benar-benar perlu:
-- Pertanyaan umum (apa itu emas, cara mulai investasi, saran investasi, dll) JANGAN search — jawab langsung dari pengetahuanmu
-- Hanya search untuk: harga saham spesifik terkini, berita/event yang sangat baru, IPO terbaru, data yang berubah cepat
-- Pertanyaan edukasi dasar TIDAK PERLU search sama sekali
-
 KEAHLIAN KAMU — SEJARAH EKONOMI LENGKAP:
-- Sistem barter awal peradaban manusia (sebelum 3000 SM)
-- Lahirnya uang: koin elektrum Lydia ~600 SM, uang kertas China ~700 M
-- Perdagangan kuno: Mesopotamia, Jalur Sutra, rempah-rempah Nusantara
-- Merkantilisme Eropa abad 16-18, Revolusi Industri, lahirnya kapitalisme
-- Standar Emas, sistem Bretton Woods 1944, Nixon Shock 1971
-- Semua krisis ekonomi: Tulip Mania 1637, South Sea Bubble 1720, Panic of 1873/1893/1907
-- Great Depression 1929, Marshall Plan, kebangkitan Jepang pasca WW2
-- Krisis minyak 1973, Black Monday 1987, Jepang Lost Decade 1990an
-- Asian Financial Crisis 1997 (krisis rupiah Indonesia secara mendalam)
-- Dot-com bubble 2000, Global Financial Crisis 2008, European Debt Crisis
-- COVID crash 2020, crypto bull run 2021, bear market 2022
-- Semua event sampai pertengahan 2025
+- Sistem barter, lahirnya uang, perdagangan kuno, Jalur Sutra
+- Standar Emas, Bretton Woods 1944, Nixon Shock 1971
+- Krisis ekonomi: Tulip Mania 1637, Panic 1873/1893/1907, Great Depression 1929
+- Krisis minyak 1973, Black Monday 1987, Jepang Lost Decade
+- Asian Financial Crisis 1997, Dot-com bubble 2000, Global Financial Crisis 2008
+- COVID crash 2020, crypto cycles, sampai pertengahan 2025
 
 PASAR KEUANGAN:
-- Saham IDX (BEI), NYSE, NASDAQ, bursa dunia lainnya
-- Analisis teknikal dan fundamental lengkap
-- IPO, rights issue, dividen, corporate action
-- ETF, reksa dana, obligasi, SBN Indonesia
-- Crypto, DeFi, NFT, blockchain
-- Forex, komoditas, emas, minyak
-- Kebijakan bank sentral (Fed, BI, ECB)
-- Makroekonomi global dan Indonesia
+- Saham IDX, NYSE, NASDAQ — analisis teknikal dan fundamental
+- Crypto, DeFi, blockchain, forex, komoditas, emas
+- Makroekonomi, kebijakan bank sentral
 ${marketContext}
 
 CARA MENJAWAB:
-- Natural dan engaging seperti mentor expert
+- Natural, engaging, seperti mentor expert
 - Gunakan data real-time di atas jika tersedia — WAJIB, jangan mengarang harga
-- Untuk event setelah Juli 2025: sampaikan jujur kamu tidak punya info terkini, sarankan cek Bloomberg/Reuters/IDX/Stockbit
-- Untuk harga saham yang tidak ada datanya: arahkan ke Stockbit, RTI, Yahoo Finance
+- Untuk event setelah Juli 2025 yang tidak ada di data real-time: sampaikan jujur tidak tahu, sarankan cek sumber resmi
 - Jangan pernah mengarang fakta atau harga
+- Jawaban ringkas dan padat, tidak perlu terlalu panjang kecuali diminta detail
 
 Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange crypto terbaik untuk pemula.
 Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
-    // Hanya aktifkan web search untuk pertanyaan yang benar-benar butuh info terkini
-    const needsWebSearch = /harga saham|ipo|berita|news terkini|minggu ini|bulan ini|terbaru|spacex|nasdaq|^siapa|kapan.*terjadi|update.*market/i.test(lastText) && lastText.length < 200;
-
-    const requestBody = {
-      model: 'claude-sonnet-4-5',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages,
-      stream: true
-    };
-
-    if (needsWebSearch) {
-      requestBody.tools = [{
-        type: 'web_search_20250305',
-        name: 'web_search',
-        max_uses: 2
-      }];
-    }
-
-    const controller = new AbortController();
-    const apiTimeout = setTimeout(() => controller.abort(), 45000);
-
-    let response;
-    try {
-      response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal
-      });
-    } catch (fetchErr) {
-      clearTimeout(apiTimeout);
-      if (fetchErr.name === 'AbortError') {
-        res.writeHead(200, { 'Content-Type': 'text/event-stream' });
-        res.write(`data: ${JSON.stringify({ text: 'Maaf, butuh waktu lebih lama dari biasanya. Coba tanya ulang ya!' })}\n\n`);
-        res.write('data: [DONE]\n\n');
-        return res.end();
-      }
-      throw fetchErr;
-    }
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages
+      })
+    });
 
     if (!response.ok) {
-      clearTimeout(apiTimeout);
+      const errText = await response.text();
+      console.error('Anthropic API error:', response.status, errText);
       throw new Error(`API error: ${response.status}`);
     }
 
-    // Set up SSE response to client
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
-    });
-
-    const reader = response.body;
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    for await (const chunk of reader) {
-      clearTimeout(apiTimeout);
-      buffer += decoder.decode(chunk, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const dataStr = line.slice(6).trim();
-        if (!dataStr || dataStr === '[DONE]') continue;
-
-        try {
-          const evt = JSON.parse(dataStr);
-          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
-            res.write(`data: ${JSON.stringify({ text: evt.delta.text })}\n\n`);
-          }
-        } catch (e) { /* skip malformed chunks */ }
-      }
-    }
-
-    res.write('data: [DONE]\n\n');
-    return res.end();
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || 'Aduh, lagi ada gangguan. Coba lagi ya!';
+    return res.status(200).json({ reply });
 
   } catch (error) {
-    console.error('Error:', error);
-    try {
-      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
-      res.write(`data: ${JSON.stringify({ text: 'Aduh, lagi ada gangguan. Coba lagi ya!' })}\n\n`);
-      res.write('data: [DONE]\n\n');
-      return res.end();
-    } catch(e) {
-      return res.status(500).json({ error: 'Internal server error' });
-    }
+    console.error('Error:', error.message);
+    return res.status(200).json({ reply: 'Aduh, lagi ada gangguan teknis. Coba lagi dalam beberapa saat ya!' });
   }
 }
