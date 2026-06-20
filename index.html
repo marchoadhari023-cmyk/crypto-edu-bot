@@ -753,6 +753,31 @@ function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMs
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 async function sendChip(t){document.getElementById('inp').value=t;await sendMsg();}
 
+function typeEffect(bubble, fullText, msgsContainer){
+  return new Promise(resolve=>{
+    const formatted=fullText.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    // Split by HTML tags vs plain text so we don't break tags mid-typing
+    const tokens=formatted.match(/<[^>]+>|[^<]/g)||[];
+    let i=0;
+    const charsPerTick=3; // kecepatan ngetik
+    bubble.innerHTML='';
+    function tick(){
+      let chunk='';
+      for(let c=0;c<charsPerTick&&i<tokens.length;c++,i++){
+        chunk+=tokens[i];
+      }
+      bubble.innerHTML+=chunk;
+      if(msgsContainer)msgsContainer.scrollTop=msgsContainer.scrollHeight;
+      if(i<tokens.length){
+        requestAnimationFrame(tick);
+      }else{
+        resolve();
+      }
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
 function updateThinkingStep(bubble, steps){
   if(!bubble)return;
   const wrap = bubble.querySelector('.thinking-wrap');
@@ -834,7 +859,7 @@ async function sendMsg(){
     const d=await r.json();
     const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
     lb.className='bubble ai';
-    lb.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    await typeEffect(lb,reply,msgsEl);
     currentHistory.push({role:'assistant',content:reply});
     if(currentConvId&&conversations[currentConvId]){
       const historyToSave=currentHistory.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.find(c=>c.type==='text')?.text||'[Gambar]':m.content}));
