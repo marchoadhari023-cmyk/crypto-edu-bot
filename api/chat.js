@@ -258,7 +258,7 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
     const requestBody = {
       model: 'claude-sonnet-4-5',
-      max_tokens: 4096,
+      max_tokens: 1024,
       system: systemPrompt,
       messages
     };
