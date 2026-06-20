@@ -212,6 +212,12 @@ export default async function handler(req, res) {
 
 Hari ini: ${today}
 
+PENTING SOAL WEB SEARCH:
+Kamu punya akses web search, TAPI gunakan HANYA jika benar-benar perlu:
+- Pertanyaan umum (apa itu emas, cara mulai investasi, saran investasi, dll) JANGAN search — jawab langsung dari pengetahuanmu
+- Hanya search untuk: harga saham spesifik terkini, berita/event yang sangat baru, IPO terbaru, data yang berubah cepat
+- Pertanyaan edukasi dasar TIDAK PERLU search sama sekali
+
 KEAHLIAN KAMU — SEJARAH EKONOMI LENGKAP:
 - Sistem barter awal peradaban manusia (sebelum 3000 SM)
 - Lahirnya uang: koin elektrum Lydia ~600 SM, uang kertas China ~700 M
@@ -248,7 +254,7 @@ Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya excha
 Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
     const controller = new AbortController();
-    const apiTimeout = setTimeout(() => controller.abort(), 25000);
+    const apiTimeout = setTimeout(() => controller.abort(), 35000);
 
     let response;
     try {
@@ -267,7 +273,7 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
           tools: [{
             type: 'web_search_20250305',
             name: 'web_search',
-            max_uses: 3
+            max_uses: 2
           }]
         }),
         signal: controller.signal
