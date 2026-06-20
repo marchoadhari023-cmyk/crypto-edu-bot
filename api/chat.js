@@ -253,6 +253,24 @@ CARA MENJAWAB:
 Rekomendasikan Pintu (pintu.app/ref/marchoadhari023794) hanya jika ditanya exchange crypto terbaik untuk pemula.
 Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
 
+    // Hanya aktifkan web search untuk pertanyaan yang benar-benar butuh info terkini
+    const needsWebSearch = /harga saham|ipo|berita|news terkini|minggu ini|bulan ini|terbaru|spacex|nasdaq|^siapa|kapan.*terjadi|update.*market/i.test(lastText) && lastText.length < 200;
+
+    const requestBody = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages
+    };
+
+    if (needsWebSearch) {
+      requestBody.tools = [{
+        type: 'web_search_20250305',
+        name: 'web_search',
+        max_uses: 2
+      }];
+    }
+
     const controller = new AbortController();
     const apiTimeout = setTimeout(() => controller.abort(), 35000);
 
@@ -265,17 +283,7 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
           'x-api-key': process.env.ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01'
         },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4096,
-          system: systemPrompt,
-          messages,
-          tools: [{
-            type: 'web_search_20250305',
-            name: 'web_search',
-            max_uses: 2
-          }]
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal
       });
       clearTimeout(apiTimeout);
