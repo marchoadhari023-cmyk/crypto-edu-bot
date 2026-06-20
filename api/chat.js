@@ -257,7 +257,7 @@ Ingatkan ini edukasi bukan saran investasi — natural di akhir jawaban.`;
     const needsWebSearch = /harga saham|ipo|berita|news terkini|minggu ini|bulan ini|terbaru|spacex|nasdaq|^siapa|kapan.*terjadi|update.*market/i.test(lastText) && lastText.length < 200;
 
     const requestBody = {
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-4-5',
       max_tokens: 4096,
       system: systemPrompt,
       messages
