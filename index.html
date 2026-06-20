@@ -816,11 +816,10 @@ async function sendMsg(){
     ]);
 
     const controller=new AbortController();
-    const timeoutId=setTimeout(()=>controller.abort(),40000);
+    const timeoutId=setTimeout(()=>controller.abort(),45000);
     let r;
     try{
       r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier}),signal:controller.signal});
-      clearTimeout(timeoutId);
     }catch(fetchErr){
       clearTimeout(timeoutId);
       if(fetchErr.name==='AbortError'){
@@ -831,10 +830,53 @@ async function sendMsg(){
       }
       throw fetchErr;
     }
-    const d=await r.json();
-    const reply=d.reply||'Aduh, lagi ada gangguan. Coba lagi ya!';
-    lb.className='bubble ai';
-    lb.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+
+    // Streaming response handler
+    let reply='';
+    let firstChunk=true;
+    const streamReader=r.body.getReader();
+    const streamDecoder=new TextDecoder();
+    let streamBuffer='';
+
+    try{
+      while(true){
+        const{done,value}=await streamReader.read();
+        if(done)break;
+        clearTimeout(timeoutId);
+        streamBuffer+=streamDecoder.decode(value,{stream:true});
+        const lines=streamBuffer.split('\\n');
+        streamBuffer=lines.pop()||'';
+        for(const line of lines){
+          if(!line.startsWith('data: '))continue;
+          const dataStr=line.slice(6).trim();
+          if(!dataStr)continue;
+          if(dataStr==='[DONE]')continue;
+          try{
+            const evt=JSON.parse(dataStr);
+            if(evt.text){
+              if(firstChunk){
+                lb.className='bubble ai';
+                lb.innerHTML='';
+                firstChunk=false;
+              }
+              reply+=evt.text;
+              lb.innerHTML=reply.replace(/\\*\\*(.*?)\\*\\*/g,'<strong>$1</strong>').replace(/\\n/g,'<br>');
+              msgsEl.scrollTop=msgsEl.scrollHeight;
+            }
+          }catch(e){}
+        }
+      }
+    }catch(streamErr){
+      console.error('Stream error:',streamErr);
+    }
+    clearTimeout(timeoutId);
+
+    if(!reply){
+      reply='Aduh, lagi ada gangguan. Coba lagi ya!';
+      lb.className='bubble ai';
+      lb.innerHTML=reply;
+    }
+
     currentHistory.push({role:'assistant',content:reply});
     if(currentConvId&&conversations[currentConvId]){
       const historyToSave=currentHistory.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.find(c=>c.type==='text')?.text||'[Gambar]':m.content}));
