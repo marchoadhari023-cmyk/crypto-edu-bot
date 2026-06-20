@@ -816,7 +816,7 @@ async function sendMsg(){
     ]);
 
     const controller=new AbortController();
-    const timeoutId=setTimeout(()=>controller.abort(),30000);
+    const timeoutId=setTimeout(()=>controller.abort(),40000);
     let r;
     try{
       r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:currentHistory,isMember:tier!=='free',tier}),signal:controller.signal});
